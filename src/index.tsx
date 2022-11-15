@@ -1,19 +1,33 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider, } from "react-router-dom";
+import { LoginPage } from "./routes/LoginPage";
+import { RootPage } from "./routes/RootPage";
+import { LoginRedirectPage } from './routes/LoginRedirectPage';
+import { RoutesEnum } from './types';
+import { ZtyrPage } from './routes/ZtyrPage';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const router = createBrowserRouter([
+  {
+    path: RoutesEnum.ROOT,
+    element: <RootPage/>,
+    children: [
+      {
+        path: RoutesEnum.LOGIN,
+        element: <LoginPage/>,
+      },
+      {
+        path: RoutesEnum.LOGIN_REDIRECT,
+        element: <LoginRedirectPage/>,
+      },
+      {
+        path: RoutesEnum.ZTYR,
+        element: <ZtyrPage/>
+      }
+    ]
+  },
+]);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+createRoot(document.getElementById("root")!).render(
+  <RouterProvider router={router}/>
+);

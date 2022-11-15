@@ -1,46 +1,40 @@
-# Getting Started with Create React App
+- приложение в Dropbox Console - `asau164`, [link](https://www.dropbox.com/developers/apps/info/7zprmzwuj93k5gg)
+- содержимое `.env.local`
+  ```
+  PORT=<номер порта на котором будет работать текущее приложение, например 22133>
+  REACT_APP_PORT=$PORT
+  REACT_APP_DROPBOX_CLIENT_ID=<указать здесь *cliendId (см. понятие [221115174400])>
+  # тут часть `login-redirect` is SYNC [221115183353]
+  REACT_APP_REDIRECT_URI=http://localhost:$PORT/login-redirect
+  ```
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Понятия
+- *dropbox-auth-url, *д-линк [[221115175000]]
+  - URL на который *клиент делает запрос, чтобы запустить процесс авторизации в Dropbox
+- *auth-url, *authUrl, *аурл-строка, [[221115173800]]
+  - URL который возвращает *сервер-авторизации, после того как пользователь дал согласие
+  - имеет следующий формат `R/#H`, где 
+    - `R` - это *redirect-url (например `http://localhost:22133`), 
+    - `H` - это *к-строка
+  - см. пример [221114212500]
+- *auth-server, *авт-сервер, *сервер-авторизации, [[221115174404]] - сервер авторизации
+- *client, *клиент, [[221115174403]] - это текущее приложение. Если более абстрактно, то это сущность которая ходит за ресурсами от имени пользователя
+- *redirect-url, [[221115174402]] 
+  - это URL (URI) который *клиент отправляет *серверу-авторизации, указывая его в query-параметре `redirect_uri` *д-линка 
+  - программные сущности: [221115174653]
+- *к-строка, *qstring, *queString, [[221114213500]]
+  - это часть *аурл-строки
+  - представляет собой "query-строку" с авторизационными данными (с *токеном-доступа и др.)
+  - начинается с символа `#`
+  - примеры 
+    - 1 `#access_token=111&token_type=222` 
+    - 2 
+      ```
+      #access_token=sl.BTLxISmDXJt2tOQE-vlPtgJE1ST9GZWfI_4YUTu-cINCGZz_6WR656KdrRXyNPhrCjmYQRGEKERCgcpIrP1Kk3dkk0z5a4J-YleTo2LF_IKj7kSRelC8Yk2HcvkUTjia-GXuhbs&token_type=bearer&expires_in=14400&scope=account_info.read&uid=7182663&account_id=dbid%3AAABjnmL2fEo_nz7ofGYhefI3a7IiLvZrhE4&state=auth_token%2Ffrom_oauth1%21k2m%2FicDpJsdVq1h4SvUhsJ5b
+      ```
+  - связанный программный код: 
+    - [221114212902] - enum ключей
+- *токен-доступа, *access-token, access token, [[221115174401]] - 
+- *clientId, [[221115174400]] 
+  - в Dropbox API это идентификатор приложения, называется там `App key`. В терминологии OAuth 2.0 это `client id`
+  - программные сущности: [221115174629]
