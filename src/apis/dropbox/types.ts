@@ -10,3 +10,12 @@ export type ClientIdType = string;
  * ID [[221115174653]]
  */
 export type RedirectUriType = string;
+
+/**
+ *
+ * @param data
+ */
+export function isErrorPathNotFoundPredicate(data: any): boolean {
+  if (!data) return false;
+  return data.error?.path?.['.tag'] === 'not_found'
+}

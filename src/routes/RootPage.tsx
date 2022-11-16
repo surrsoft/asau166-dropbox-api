@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { ChakraProvider, Heading } from '@chakra-ui/react';
 import { theme, themeObj } from '../theme';
 import { RoutesEnum } from '../types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const MainStyled = styled.div`
   padding: 12px;
@@ -41,23 +42,27 @@ const HeadingStyled = styled.div`
   background: ${themeObj.colors.thRootHead.bg};
 `
 
+const queryClient = new QueryClient()
+
 export function RootPage() {
 
-  return <ChakraProvider theme={theme}>
-    <MainStyled>
-      <HeadingStyled>
-        <Heading size={'md'}>asau166-project</Heading>
-      </HeadingStyled>
-      <ContainerStyled>
-        <SidebarStyled>
-          <SidebarLinkStyled to={RoutesEnum.ROOT}>Main</SidebarLinkStyled>
-          <SidebarLinkStyled to={RoutesEnum.LOGIN}>Authorize</SidebarLinkStyled>
-          <SidebarLinkStyled to={RoutesEnum.ZTYR}>Ztyr</SidebarLinkStyled>
-        </SidebarStyled>
-        <OutletContainerStyled>
-          <Outlet/>
-        </OutletContainerStyled>
-      </ContainerStyled>
-    </MainStyled>
-  </ChakraProvider>
+  return <QueryClientProvider client={queryClient}>
+    <ChakraProvider theme={theme}>
+      <MainStyled>
+        <HeadingStyled>
+          <Heading size={'md'}>asau166-project</Heading>
+        </HeadingStyled>
+        <ContainerStyled>
+          <SidebarStyled>
+            <SidebarLinkStyled to={RoutesEnum.ROOT}>Main</SidebarLinkStyled>
+            <SidebarLinkStyled to={RoutesEnum.LOGIN}>Authorize</SidebarLinkStyled>
+            <SidebarLinkStyled to={RoutesEnum.ZTYR}>Ztyr</SidebarLinkStyled>
+          </SidebarStyled>
+          <OutletContainerStyled>
+            <Outlet/>
+          </OutletContainerStyled>
+        </ContainerStyled>
+      </MainStyled>
+    </ChakraProvider>
+  </QueryClientProvider>
 }

@@ -6,11 +6,13 @@ import { RootPage } from "./routes/RootPage";
 import { LoginRedirectPage } from './routes/LoginRedirectPage';
 import { RoutesEnum } from './types';
 import { ZtyrPage } from './routes/ZtyrPage';
+import { ErrorPage } from './routes/ErrorPage';
 
 const router = createBrowserRouter([
   {
     path: RoutesEnum.ROOT,
     element: <RootPage/>,
+    errorElement: <ErrorPage/>,
     children: [
       {
         path: RoutesEnum.LOGIN,
@@ -22,7 +24,8 @@ const router = createBrowserRouter([
       },
       {
         path: RoutesEnum.ZTYR,
-        element: <ZtyrPage/>
+        element: <ZtyrPage/>,
+        errorElement: <ErrorPage/>,
       }
     ]
   },
