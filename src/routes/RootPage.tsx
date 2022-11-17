@@ -17,7 +17,7 @@ const ContainerStyled = styled.div`
 const SidebarStyled = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 280px;
+  min-width: 180px;
   background-color: ${themeObj.colors.thSidebar.bg};
   padding: 12px;
 `

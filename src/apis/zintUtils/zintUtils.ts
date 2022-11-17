@@ -54,14 +54,23 @@ export class ZintUtils {
   }
 
   /**
-   *
-   * @param zintsString -- *zintsString
+   * Возвращает TRUE если {@param zintCode} присутствует в {@param zintsString}
+   * @param zintsString -- *zintsString, все [zint]-коды
    * @param zintCode -- *zintCode
    */
-  static zintNameContainsIs(zintsString: string, zintCode: string) {
+  static zintAlreadyExistsIs(zintsString: string, zintCode: string) {
     if (zintsString && zintsString.length > 0 && zintCode && zintCode.length > 0) {
-      return zintsString.split('\n').some(el => el === zintCode);
+      return zintsString.split('\n').map(el => {
+        return el.replace('\r', '').replace('\n', '')
+      }).some(el => el === zintCode);
     }
     return false;
+  }
+
+  static zintsStringToList(zintsString: string) {
+    if (zintsString) {
+      return zintsString.split('\n').filter(Boolean)
+    }
+    return []
   }
 }
