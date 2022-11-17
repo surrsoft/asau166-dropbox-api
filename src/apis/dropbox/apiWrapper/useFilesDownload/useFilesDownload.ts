@@ -10,11 +10,17 @@ export enum ResultCodeEnum {
   UNAUTHORIZED = 'unauthorized'
 }
 
+export interface ParamsType {
+  accessToken: string
+  filePath: string
+  enabled?: boolean
+}
+
 /**
  * получение содержимого файла {@param filePath}
  * @param accessToken
  */
-export function useFilesDownload(accessToken: string, filePath: string) {
+export function useFilesDownload({accessToken, filePath, enabled = true}: ParamsType) {
   const result = useRqCommonRequest({
     queryKey: ['asau166-dropbox-api-files_download'],
     url: `${DROPBOX_URL_CONTENT}${DropboxMethodEnum.FILES__DOWNLOAD}`,
@@ -27,10 +33,15 @@ export function useFilesDownload(accessToken: string, filePath: string) {
     predicatesError: [
       {id: ResultCodeEnum.PATH_NOT_FOUND, predicate: isErrorPathNotFoundPredicate, httpCode: 409},
       {id: ResultCodeEnum.UNAUTHORIZED, predicate: () => true, httpCode: 401},
-    ]
+    ],
+    queryOptions: {
+      enabled
+    }
   })
 
-  const {isDone, isSuccess, errorId} = result;
+  const {isDone, isSuccess, errorId, queryResultRaw} = result;
+
+  console.log('!!-!!-!!  queryResultRaw {221117165146}\n', queryResultRaw); // del+
 
   if (isDone && !isSuccess) {
     switch (errorId) {
@@ -39,7 +50,7 @@ export function useFilesDownload(accessToken: string, filePath: string) {
       case ResultCodeEnum.UNAUTHORIZED:
         throw 'unauthorized (err code 221116183924)'
       default:
-        throw 'other error (err code 221116181811)'
+        throw `other error (err code 221116181811); ${JSON.stringify(queryResultRaw || '')}`
     }
   }
 

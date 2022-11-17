@@ -57,13 +57,13 @@ export function ZtyrPage() {
 
   const accessToken = accessTokenGet() || '';
 
-  // --- загрузка *з-строки (см. понятие [221116233200])
+  // --- download; загрузка *з-строки (см. понятие [221116233200])
 
   const {
     data: loadingZintsString,
     isProgress: loadingIsProgress,
     queryResultRaw: {refetch: loadingRefetch}
-  } = useFilesDownload(accessToken, zintsPath)
+  } = useFilesDownload({accessToken, filePath: zintsPath, enabled: isAuth})
 
   // --- zintsList, zintsListLast
 
@@ -115,44 +115,44 @@ export function ZtyrPage() {
       isAuth ? <div style={{color: 'green'}}>have access token</div> : <div style={{color: 'red'}}>no access token</div>
     }
     <GapRowStyled/>
-    <Input
-      bgColor={'white'}
-      value={$zintCodeVal}
-      onChange={handleZintValOnChange}
-      isInvalid={!$inputValidIs}
-      disabled={isProgress}
-    />
-    {!$inputValidIs && <Text
-			fontSize={'xs'}
-			color={'#b42460'}
-			paddingLeft={2}
-		>
-      {'invalid value' + ($inputErrText ? `; ${$inputErrText}` : '')}
-		</Text>}
-    <GapRowStyled height={8}/>
-    <HStack spacing='24px'>
-      <Button onClick={handleSave} disabled={isProgress || !$inputValidIs}>Save</Button>
-      <Button disabled={isProgress} onClick={handleGenerate}>generate</Button>
-      <Checkbox
-        isChecked={$isSmootChecked}
-        onChange={handleSmootCheckboxOnChange}
-        disabled={isProgress}
-      >smooth mode</Checkbox>
-      {!isProgress && <Box paddingLeft={8}>
-				<Box>элементов всего: {zintsList.length}</Box>
-			</Box>}
-    </HStack>
-    {
-      !isAuth && <Button onClick={handleToLoginPage}>to Login Page</Button>
-    }
-    {isProgress && <>
+    {!isAuth && <Button onClick={handleToLoginPage}>go to Authorize page</Button>}
+    {isAuth && <>
+			<Input
+				bgColor={'white'}
+				value={$zintCodeVal}
+				onChange={handleZintValOnChange}
+				isInvalid={!$inputValidIs}
+				disabled={isProgress}
+			/>
+      {!$inputValidIs && <Text
+				fontSize={'xs'}
+				color={'#b42460'}
+				paddingLeft={2}
+			>
+        {'invalid value' + ($inputErrText ? `; ${$inputErrText}` : '')}
+			</Text>}
 			<GapRowStyled height={8}/>
-			<Spinner/>
+			<HStack spacing='24px'>
+				<Button onClick={handleSave} disabled={isProgress || !$inputValidIs}>save</Button>
+				<Button disabled={isProgress} onClick={handleGenerate}>generate</Button>
+				<Checkbox
+					isChecked={$isSmootChecked}
+					onChange={handleSmootCheckboxOnChange}
+					disabled={isProgress}
+				>smooth mode</Checkbox>
+        {!isProgress && <Box paddingLeft={8}>
+					<Box>элементов всего: {zintsList.length}</Box>
+				</Box>}
+			</HStack>
+      {isProgress && <>
+				<GapRowStyled height={8}/>
+				<Spinner/>
+			</>}
+      {!isProgress && <>
+				<GapRowStyled height={16}/>
+				<LastCodes zintCodes={zintsListLast}/>
+			</>
+      }
 		</>}
-    {!isProgress && <>
-			<GapRowStyled height={16}/>
-			<LastCodes zintCodes={zintsListLast}/>
-		</>
-    }
   </div>
 }

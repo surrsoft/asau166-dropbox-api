@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+			const hash = location.hash;
+			if (hash) {
+				const token = hash.split('&')[0].split('=')[1];
+				if (token) {
+					localStorage.setItem('asau166_accessToken', token);
+					// window.location.href = 'https://surrsoft.github.io/asau166-dropbox-api/';
+				}
+			}
+    </script>
+</head>
+<body>
+<h1>success</h1>
+<a href="https://surrsoft.github.io/asau166-dropbox-api/">go to main page</a>
+</body>
+</html>

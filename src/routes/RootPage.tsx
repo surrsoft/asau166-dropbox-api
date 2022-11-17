@@ -5,6 +5,9 @@ import { ChakraProvider, Heading } from '@chakra-ui/react';
 import { theme, themeObj } from '../theme';
 import { RoutesEnum } from '../types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useAccessTokenGetFromUrl } from '../apis/dropbox/useAccessTokenGetFromUrl';
+
+const appRev = process.env.REACT_APP_APP_REVISION || '';
 
 const MainStyled = styled.div`
   padding: 12px;
@@ -46,11 +49,13 @@ const queryClient = new QueryClient()
 
 export function RootPage() {
 
+  useAccessTokenGetFromUrl();
+
   return <QueryClientProvider client={queryClient}>
     <ChakraProvider theme={theme}>
       <MainStyled>
         <HeadingStyled>
-          <Heading size={'md'}>asau166-project</Heading>
+          <Heading size={'md'}>asau166-project rev. {appRev}</Heading>
         </HeadingStyled>
         <ContainerStyled>
           <SidebarStyled>

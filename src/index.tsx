@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider, } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, createHashRouter } from "react-router-dom";
 import { LoginPage } from "./routes/LoginPage";
 import { RootPage } from "./routes/RootPage";
 import { LoginRedirectPage } from './routes/LoginRedirectPage';
@@ -8,7 +8,7 @@ import { RoutesEnum } from './types';
 import { ZtyrPage } from './routes/ZtyrPage';
 import { ErrorPage } from './routes/ErrorPage';
 
-const router = createBrowserRouter([
+const routes = [
   {
     path: RoutesEnum.ROOT,
     element: <RootPage/>,
@@ -29,7 +29,11 @@ const router = createBrowserRouter([
       }
     ]
   },
-]);
+];
+
+const createRouter = process.env.NODE_ENV === 'production' ? createHashRouter : createBrowserRouter;
+
+const router = createRouter(routes);
 
 createRoot(document.getElementById("root")!).render(
   <RouterProvider router={router}/>
