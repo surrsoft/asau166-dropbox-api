@@ -6,6 +6,17 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script>
+			const hash = location.hash;
+			if (hash) {
+				const token = hash.split('&')[0].split('=')[1];
+				console.log('!!-!!-!!  token {221117201849}\n', token); // del+
+				if (token) {
+					localStorage.setItem('asau166_accessToken', token);
+					window.history.replaceState(null, null, '/');
+				}
+			}
+    </script>
 </head>
 <body>
 <h1>Redirect</h1>
