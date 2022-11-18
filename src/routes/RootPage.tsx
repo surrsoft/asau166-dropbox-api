@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import React from 'react';
 import styled from 'styled-components';
 import { ChakraProvider, Heading } from '@chakra-ui/react';
@@ -31,7 +31,7 @@ const OutletContainerStyled = styled.div`
   padding: 12px;
 `
 
-export const SidebarLinkStyled = styled(Link)`
+export const SidebarLinkStyled = styled(NavLink)`
   color: ${themeObj.colors.thSidebarLinks.normal};
 
   &:hover {
@@ -47,6 +47,15 @@ const HeadingStyled = styled.div`
 
 const queryClient = new QueryClient()
 
+const fnStyle = ({isActive}: any) => {
+  return isActive ? {textDecoration: 'underline', fontWeight: 'bold'} : undefined;
+}
+
+const fnRx = () => {
+  console.log(`!!-!!-!! -> :::::::::::::: () {221118184949}:${Date.now()}`); // del+
+  return 'hello'
+}
+
 export function RootPage() {
 
   useAccessTokenGetFromUrl();
@@ -59,9 +68,9 @@ export function RootPage() {
         </HeadingStyled>
         <ContainerStyled>
           <SidebarStyled>
-            <SidebarLinkStyled to={RoutesEnum.ROOT}>Main</SidebarLinkStyled>
-            <SidebarLinkStyled to={RoutesEnum.LOGIN}>Authorize</SidebarLinkStyled>
-            <SidebarLinkStyled to={RoutesEnum.ZTYR}>Ztyr</SidebarLinkStyled>
+            <NavLink to={RoutesEnum.ROOT} style={fnStyle}>Main</NavLink>
+            <NavLink to={RoutesEnum.LOGIN} style={fnStyle}>Authorize</NavLink>
+            <NavLink to={RoutesEnum.ZTYR} style={fnStyle}>Ztyr</NavLink>
           </SidebarStyled>
           <OutletContainerStyled>
             <Outlet/>

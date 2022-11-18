@@ -1,4 +1,5 @@
 export enum LSKeysEnum {
+  /** SYNC [[221118183453]] */
   ACCESS_TOKEN = 'asau166_accessToken'
 }
 

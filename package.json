@@ -1,6 +1,6 @@
 {
   "name": "asau166-project",
-  "homepage": "https://surrsoft.github.io/asau166-dropbox-api",
+  "homepage": ".",
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -9,10 +9,7 @@
     "predeploy": "env-cmd -f .env npm run build && copy .\\other\\redirect.html .\\build\\redirect.html",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "cmd1": "env-cmd -f .env npm run build",
-    "cmd2": "gh-pages -d build",
-    "cmd3": "copy ./other/redirect.html ./build/redirect.html"
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.1",
