@@ -95,7 +95,7 @@ export function ZtyrPage() {
 
   // --- handleSave
   // чтобы у спиннера не была "дёргания" в момент когда заканчивается "download" и начинается "upload"
-  const [toSpinner, toSpinnerSet] = useState(false);
+  const [isSavingProgress, isSavingProgressSet] = useState(false);
   const handleSave = async () => {
     if (!ZintUtils.codeVerify($zintCodeVal)) {
       $inputValidIsSet(false)
@@ -107,7 +107,7 @@ export function ZtyrPage() {
       return;
     }
     // ---
-    toSpinnerSet(true)
+    isSavingProgressSet(true)
     // это нужно потому, что пока на текущем устройстве был простой, на другом устройстве файл с кодами мог быть уже
     // изменён
     await loadingRefetch();
@@ -115,11 +115,11 @@ export function ZtyrPage() {
     setTimeout(async () => {
       await uploadRefetch();
       await loadingRefetch();
-      toSpinnerSet(false)
+      isSavingProgressSet(false)
     }, 0);
   }
 
-  const isProgress = loadingIsProgress || uploadIsProgress || initialIsProgress;
+  const isProgress = loadingIsProgress || uploadIsProgress || initialIsProgress || isSavingProgress;
 
   // ---
 
@@ -159,7 +159,7 @@ export function ZtyrPage() {
 					<Box>элементов всего: {zintsList.length}</Box>
 				</Box>}
 			</Stack>
-      {(isProgress || toSpinner) && <>
+      {(isProgress) && <>
 				<GapRowStyled height={8}/>
 				<Spinner/>
 			</>}
