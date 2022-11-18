@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "https://surrsoft.github.io/asau166-dropbox-api/static/js/main.4980dc1d.js",
+    "main.js": "https://surrsoft.github.io/asau166-dropbox-api/static/js/main.b4b327ea.js",
     "index.html": "https://surrsoft.github.io/asau166-dropbox-api/index.html",
-    "main.4980dc1d.js.map": "https://surrsoft.github.io/asau166-dropbox-api/static/js/main.4980dc1d.js.map"
+    "main.b4b327ea.js.map": "https://surrsoft.github.io/asau166-dropbox-api/static/js/main.b4b327ea.js.map"
   },
   "entrypoints": [
-    "static/js/main.4980dc1d.js"
+    "static/js/main.b4b327ea.js"
   ]
 }
