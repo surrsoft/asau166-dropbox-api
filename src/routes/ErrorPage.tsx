@@ -1,7 +1,7 @@
 import { Flex, Heading, Text } from '@chakra-ui/react';
 import { useRouteError } from 'react-router-dom';
 import loIsString from 'lodash/isString';
-import { GapRowStyled } from '../components/GapRowStyled';
+import { GapRowStyled } from '../components/common/GapRowStyled';
 
 export function ErrorPage() {
   const error: any = useRouteError();

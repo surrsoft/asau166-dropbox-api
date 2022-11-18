@@ -1,11 +1,28 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import React from 'react';
 import styled from 'styled-components';
-import { ChakraProvider, Heading } from '@chakra-ui/react';
+import {
+  Button,
+  ChakraProvider,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Heading,
+  Hide,
+  IconButton,
+  Show,
+  useDisclosure
+} from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import { theme, themeObj } from '../theme';
 import { RoutesEnum } from '../types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAccessTokenGetFromUrl } from '../apis/dropbox/useAccessTokenGetFromUrl';
+import { MenuList, SidebarStyled } from '../components/MenuList';
 
 const appRev = process.env.REACT_APP_APP_REVISION || '';
 
@@ -15,14 +32,6 @@ const MainStyled = styled.div`
 
 const ContainerStyled = styled.div`
   display: flex;
-`
-
-const SidebarStyled = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 180px;
-  background-color: ${themeObj.colors.thSidebar.bg};
-  padding: 12px;
 `
 
 const OutletContainerStyled = styled.div`
@@ -47,35 +56,55 @@ const HeadingStyled = styled.div`
 
 const queryClient = new QueryClient()
 
-const fnStyle = ({isActive}: any) => {
-  return isActive ? {textDecoration: 'underline', fontWeight: 'bold'} : undefined;
-}
-
-const fnRx = () => {
-  console.log(`!!-!!-!! -> :::::::::::::: () {221118184949}:${Date.now()}`); // del+
-  return 'hello'
-}
-
+/** */
 export function RootPage() {
 
   useAccessTokenGetFromUrl();
+  const {isOpen, onOpen, onClose} = useDisclosure()
+  const btnRef = React.useRef(null)
+  const location = useLocation()
+  console.log('!!-!!-!!  location {221118234639}\n', location); // del+
 
   return <QueryClientProvider client={queryClient}>
     <ChakraProvider theme={theme}>
       <MainStyled>
         <HeadingStyled>
+          <Show below='md'>
+            <IconButton ref={btnRef} aria-label='menu open/close' icon={<HamburgerIcon/>} mr={4} onClick={onOpen}/>
+          </Show>
           <Heading size={'md'}>asau166-project rev. {appRev}</Heading>
         </HeadingStyled>
         <ContainerStyled>
-          <SidebarStyled>
-            <NavLink to={RoutesEnum.ROOT} style={fnStyle}>Main</NavLink>
-            <NavLink to={RoutesEnum.LOGIN} style={fnStyle}>Authorize</NavLink>
-            <NavLink to={RoutesEnum.ZTYR} style={fnStyle}>Ztyr</NavLink>
-          </SidebarStyled>
+          <Show>
+            {location?.pathname === RoutesEnum.ROOT && <MenuList/>}
+          </Show>
+          <Hide below={'md'}>
+            {location?.pathname !== RoutesEnum.ROOT && <MenuList/>}
+          </Hide>
           <OutletContainerStyled>
             <Outlet/>
           </OutletContainerStyled>
         </ContainerStyled>
+        <Drawer
+          isOpen={isOpen}
+          placement='left'
+          onClose={onClose}
+          finalFocusRef={btnRef}
+        >
+          <DrawerOverlay/>
+          <DrawerContent>
+            <DrawerCloseButton/>
+            <DrawerHeader>Menu</DrawerHeader>
+            <DrawerBody>
+              <MenuList onClose={onClose}/>
+            </DrawerBody>
+            <DrawerFooter>
+              <Button variant='outline' mr={3} onClick={onClose}>
+                Close
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
       </MainStyled>
     </ChakraProvider>
   </QueryClientProvider>

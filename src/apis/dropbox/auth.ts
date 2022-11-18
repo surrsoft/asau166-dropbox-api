@@ -29,3 +29,15 @@ export function authUrlCook(clientId: ClientIdType, redirectUri: RedirectUriType
     + `&redirect_uri=${encodedUri}`
     + `&token_access_type=online`
 }
+
+/** направляет браузер на *д-линк (см. понятие [221115175000]) */
+export const handleAuthorize = () => {
+  const clientId = process.env.REACT_APP_DROPBOX_CLIENT_ID || '';
+  const redirectUri = process.env.REACT_APP_REDIRECT_URI || '';
+  const dropboxAuthUrl = authUrlCook(clientId, redirectUri);
+  if (window?.location) {
+    window.location.href = dropboxAuthUrl;
+  } else {
+    console.error('BR: window.location is not accessible');
+  }
+}

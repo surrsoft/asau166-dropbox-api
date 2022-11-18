@@ -1,6 +1,6 @@
-import { Button, Checkbox, Heading, HStack, Input, Text, Spinner, Box } from '@chakra-ui/react';
-import { isAuthorized } from '../apis/dropbox/auth';
-import { GapRowStyled } from '../components/GapRowStyled';
+import { Button, Checkbox, Heading, HStack, Input, Text, Spinner, Box, Stack } from '@chakra-ui/react';
+import { handleAuthorize, isAuthorized } from '../apis/dropbox/auth';
+import { GapRowStyled } from '../components/common/GapRowStyled';
 import { useNavigate } from 'react-router-dom';
 import { RoutesEnum } from '../types';
 import { useMemo, useState } from 'react';
@@ -30,10 +30,6 @@ export function ZtyrPage() {
   }
 
   // ---
-
-  const handleToLoginPage = () => {
-    navigate('/' + RoutesEnum.LOGIN)
-  }
 
   const [$isSmootChecked, $isSmootCheckedSet] = useState(false);
   const handleSmootCheckboxOnChange = (ev: any) => {
@@ -118,11 +114,8 @@ export function ZtyrPage() {
 
   return <div>
     <Heading size={'mb'}>Ztyr</Heading>
-    {
-      isAuth ? <div style={{color: 'green'}}>have access token</div> : <div style={{color: 'red'}}>no access token</div>
-    }
     <GapRowStyled/>
-    {!isAuth && <Button onClick={handleToLoginPage}>go to Authorize page</Button>}
+    {!isAuth && <Button onClick={handleAuthorize}>go to authorize</Button>}
     {isAuth && <>
 			<Input
 				bgColor={'white'}
@@ -139,18 +132,22 @@ export function ZtyrPage() {
         {'invalid value' + ($inputErrText ? `; ${$inputErrText}` : '')}
 			</Text>}
 			<GapRowStyled height={8}/>
-			<HStack spacing='24px'>
-				<Button onClick={handleSave} disabled={isProgress || !$inputValidIs}>save</Button>
-				<Button disabled={isProgress} onClick={handleGenerate}>generate</Button>
+			<Stack direction={{base: 'column', lg: 'row'}} spacing='8px'>
+        <Box display='flex' columnGap='8px'>
+					<Button disabled={isProgress} onClick={handleGenerate} flexGrow={1}>generate</Button>
+          <Button onClick={handleSave} disabled={isProgress || !$inputValidIs} flexGrow={1}>save</Button>
+        </Box>
 				<Checkbox
 					isChecked={$isSmootChecked}
 					onChange={handleSmootCheckboxOnChange}
 					disabled={isProgress}
-				>smooth mode</Checkbox>
-        {!isProgress && <Box paddingLeft={8}>
+				>
+					smooth mode
+				</Checkbox>
+        {!isProgress && <Box display='flex' alignItems='center'>
 					<Box>элементов всего: {zintsList.length}</Box>
 				</Box>}
-			</HStack>
+			</Stack>
       {isProgress && <>
 				<GapRowStyled height={8}/>
 				<Spinner/>
