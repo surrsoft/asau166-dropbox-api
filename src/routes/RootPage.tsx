@@ -63,7 +63,6 @@ export function RootPage() {
   const {isOpen, onOpen, onClose} = useDisclosure()
   const btnRef = React.useRef(null)
   const location = useLocation()
-  console.log('!!-!!-!!  location {221118234639}\n', location); // del+
 
   return <QueryClientProvider client={queryClient}>
     <ChakraProvider theme={theme}>

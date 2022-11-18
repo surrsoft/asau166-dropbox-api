@@ -3,7 +3,7 @@ import { handleAuthorize, isAuthorized } from '../apis/dropbox/auth';
 import { GapRowStyled } from '../components/common/GapRowStyled';
 import { useNavigate } from 'react-router-dom';
 import { RoutesEnum } from '../types';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { accessTokenGet } from '../apis/dropbox/accessTokenStore';
 import { ResultCodeEnum, useFilesDownload } from '../apis/dropbox/apiWrapper/useFilesDownload/useFilesDownload';
 import { ZintUtils } from '../apis/zintUtils/zintUtils';
@@ -58,7 +58,7 @@ export function ZtyrPage() {
   const {
     data: loadingZintsString,
     isProgress: loadingIsProgress,
-    queryResultRaw: {refetch: loadingRefetch},
+    queryResultRaw: {refetch: loadingRefetch, data: loadingInData},
     errorId: loadingErrorId,
     isDone: loadingIsDone
   } = useFilesDownload({accessToken, filePath: zintsPath, enabled: isAuth})
@@ -84,16 +84,18 @@ export function ZtyrPage() {
 
   // --- выгрузка *zintsString в Dropbox
 
-  const uploadReqRes = useFilesUpload({
+  const obj = {
     enabled: false,
     accessToken,
     data: (loadingZintsString || '') + $zintCodeVal + '\n',
     filePath: zintsPath,
-  })
+  }
+  const uploadReqRes = useFilesUpload(obj)
   const {queryResultRaw: {refetch: uploadRefetch}, isProgress: uploadIsProgress} = uploadReqRes;
 
   // --- handleSave
-
+  // чтобы у спиннера не была "дёргания" в момент когда заканчивается "download" и начинается "upload"
+  const [toSpinner, toSpinnerSet] = useState(false);
   const handleSave = async () => {
     if (!ZintUtils.codeVerify($zintCodeVal)) {
       $inputValidIsSet(false)
@@ -104,8 +106,17 @@ export function ZtyrPage() {
       $inputErrTextSet('value already exists')
       return;
     }
-    await uploadRefetch();
+    // ---
+    toSpinnerSet(true)
+    // это нужно потому, что пока на текущем устройстве был простой, на другом устройстве файл с кодами мог быть уже
+    // изменён
     await loadingRefetch();
+    // без setTimeout полученные данные не успеют попасть в хук аплоада
+    setTimeout(async () => {
+      await uploadRefetch();
+      await loadingRefetch();
+      toSpinnerSet(false)
+    }, 0);
   }
 
   const isProgress = loadingIsProgress || uploadIsProgress || initialIsProgress;
@@ -133,10 +144,10 @@ export function ZtyrPage() {
 			</Text>}
 			<GapRowStyled height={8}/>
 			<Stack direction={{base: 'column', lg: 'row'}} spacing='8px'>
-        <Box display='flex' columnGap='8px'>
+				<Box display='flex' columnGap='8px'>
 					<Button disabled={isProgress} onClick={handleGenerate} flexGrow={1}>generate</Button>
-          <Button onClick={handleSave} disabled={isProgress || !$inputValidIs} flexGrow={1}>save</Button>
-        </Box>
+					<Button onClick={handleSave} disabled={isProgress || !$inputValidIs} flexGrow={1}>save</Button>
+				</Box>
 				<Checkbox
 					isChecked={$isSmootChecked}
 					onChange={handleSmootCheckboxOnChange}
@@ -148,7 +159,7 @@ export function ZtyrPage() {
 					<Box>элементов всего: {zintsList.length}</Box>
 				</Box>}
 			</Stack>
-      {isProgress && <>
+      {(isProgress || toSpinner) && <>
 				<GapRowStyled height={8}/>
 				<Spinner/>
 			</>}

@@ -14,7 +14,7 @@ export function stdHandle(queryResultRaw: UseQueryResult<ReturnExtType, ErrType>
     isError: false,
     successId: null,
     errorId: null,
-    data: null,
+    data: queryResultRaw.data?.data,
   } as StdResultType;
   const { isFetching, isFetched, data: info } = queryResultRaw;
   ret.isProgress = isFetching;

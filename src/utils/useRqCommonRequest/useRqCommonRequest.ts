@@ -49,7 +49,7 @@ export function useRqCommonRequest(
     timeoutMsc = 0,
     testFlavor = TestFlavorEnum.UNDEF,
     isAxiosMode = true,
-    headers
+    headers,
   }: ParamsType,
 ): StdResultType {
   // --- queryOptionsNext
@@ -90,119 +90,120 @@ export function useRqCommonRequest(
   }
   // --
   urlNext = urlObj.href;
-  // ---
-  const result: UseQueryResult<ReturnExtType, ErrType> = useQuery(
-    queryKeyNext,
-    async () => {
-      if (pauseMsc > 0) {
-        await wait(pauseMsc);
-      }
-      // ---
-      if (testFlavor === TestFlavorEnum.F3) {
-        throw JSON.stringify({
-          message: 'is forced error',
-          code: '',
-          name: '',
-          codeSpc: ErrCodeEnum.FORCED,
-          url,
-          method,
-          httpCode: HTTP_CODE_UNDEF,
-        } as ErrType);
-      }
-      // --- signal; прерываем запрос если он длится дольше чем {@link timeoutMsc}
-      let signal; // не нужен для axios, т.к. у него встроенный механизм
+  // --- reqFunc
+  const reqFunc = async () => {
+    if (pauseMsc > 0) {
+      await wait(pauseMsc);
+    }
+    // ---
+    if (testFlavor === TestFlavorEnum.F3) {
+      throw JSON.stringify({
+        message: 'is forced error',
+        code: '',
+        name: '',
+        codeSpc: ErrCodeEnum.FORCED,
+        url,
+        method,
+        httpCode: HTTP_CODE_UNDEF,
+      } as ErrType);
+    }
+    // --- signal; прерываем запрос если он длится дольше чем {@link timeoutMsc}
+    let signal; // не нужен для axios, т.к. у него встроенный механизм
+    if (!isAxiosMode) {
+      const abort = new AbortController();
+      setTimeout(() => {
+        abort.abort();
+      }, timeoutMsc);
+      signal = timeoutMsc > 0 ? abort.signal : undefined;
+    }
+    // --- reqMethod
+    let reqMethod = {};
+    // для GET и HEAD явно указывать метод не нужно
+    if (method !== RequestMethodEnum.GET && method !== RequestMethodEnum.HEAD) {
+      reqMethod = {method};
+    }
+    // --- bodyNext
+    const isBodyMethod = isBodyHttpMethod(method) !== YesNoMayEnum.NO;
+    const bodyNext = body && isBodyMethod
+      ?
+      isAxiosMode ? {data: body} : {body}
+      : {};
+    // --- headersNext
+    const headersNext = headers ? {headers} : {}
+    // --- fetchResponse
+    let fetchResponse: any = null;
+    try {
+      // <=== <=== <=== FETCH
       if (!isAxiosMode) {
-        const abort = new AbortController();
-        setTimeout(() => {
-          abort.abort();
-        }, timeoutMsc);
-        signal = timeoutMsc > 0 ? abort.signal : undefined;
-      }
-      // --- reqMethod
-      let reqMethod = {};
-      // для GET и HEAD явно указывать метод не нужно
-      if (method !== RequestMethodEnum.GET && method !== RequestMethodEnum.HEAD) {
-        reqMethod = {method};
-      }
-      // --- bodyNext
-      const isBodyMethod = isBodyHttpMethod(method) !== YesNoMayEnum.NO;
-      const bodyNext = body && isBodyMethod
-        ?
-        isAxiosMode ? {data: body} : {body}
-        : {};
-      // --- headersNext
-      const headersNext = headers ? {headers} : {}
-      // --- fetchResponse
-      let fetchResponse: any = null;
-      try {
-        // <=== <=== <=== FETCH
-        if (!isAxiosMode) {
-          const fetchOptions = {signal, ...reqMethod, ...bodyNext, ...headersNext};
-          fetchResponse = await fetch(urlNext, fetchOptions);
-        } else {
-          const axiosOptions = {
-            url: urlNext,
-            ...reqMethod,
-            ...bodyNext,
-            timeout: timeoutMsc,
-            // чтобы не бросало исключение если HTTP-код меньше 200 или больше 299
-            validateStatus: () => true,
-            ...headersNext
-          };
-          fetchResponse = await axios.request(axiosOptions);
-        }
-      } catch (err: any) {
-        throw JSON.stringify({
-          message: err?.message,
-          code: `${err?.code}`,
-          name: `${err?.name}`,
-          codeSpc:
-            err?.name === 'AbortError'
-              ? ErrCodeEnum.TIMEOUTE
-              : ErrCodeEnum.FETCH,
+        const fetchOptions = {signal, ...reqMethod, ...bodyNext, ...headersNext};
+        fetchResponse = await fetch(urlNext, fetchOptions);
+      } else {
+        const axiosOptions = {
           url: urlNext,
-          method,
-          httpCode: HTTP_CODE_UNDEF,
-        } as ErrType);
+          ...reqMethod,
+          ...bodyNext,
+          timeout: timeoutMsc,
+          // чтобы не бросало исключение если HTTP-код меньше 200 или больше 299
+          validateStatus: () => true,
+          ...headersNext
+        };
+        fetchResponse = await axios.request(axiosOptions);
       }
-      const httpCode = fetchResponse?.status ?? HTTP_CODE_UNDEF;
-      // ---
-      let data = null;
-      try {
-        if (!isAxiosMode) {
-          data = await fetchResponse.json();
-        } else {
-          data = fetchResponse?.data;
-        }
-      } catch (err: any) {
-        // если данные в результате fetch не похожи на json
-        throw JSON.stringify({
-          message: err?.message,
-          code: `${err?.code}`,
-          name: `${err?.name}`,
-          codeSpc: ErrCodeEnum.JSON,
-          url: urlNext,
-          method,
-          httpCode,
-        } as ErrType);
-      }
-      // --- предикаты
-      const predicateHandlerResult = predicatesHandle(data, predicatesSuccess, predicatesError, httpCode);
-
-      // --- результат
-      return {
-        data,
-        httpCode: fetchResponse?.status ?? HTTP_CODE_UNDEF,
-        httpCodeDesc: fetchResponse?.statusText ?? '',
+    } catch (err: any) {
+      throw JSON.stringify({
+        message: err?.message,
+        code: `${err?.code}`,
+        name: `${err?.name}`,
+        codeSpc:
+          err?.name === 'AbortError'
+            ? ErrCodeEnum.TIMEOUTE
+            : ErrCodeEnum.FETCH,
         url: urlNext,
         method,
-        isInitialData: false,
-        ...predicateHandlerResult,
-      } as ReturnType;
-    },
+        httpCode: HTTP_CODE_UNDEF,
+      } as ErrType);
+    }
+    const httpCode = fetchResponse?.status ?? HTTP_CODE_UNDEF;
+    // ---
+    let data = null;
+    try {
+      if (!isAxiosMode) {
+        data = await fetchResponse.json();
+      } else {
+        data = fetchResponse?.data;
+      }
+    } catch (err: any) {
+      // если данные в результате fetch не похожи на json
+      throw JSON.stringify({
+        message: err?.message,
+        code: `${err?.code}`,
+        name: `${err?.name}`,
+        codeSpc: ErrCodeEnum.JSON,
+        url: urlNext,
+        method,
+        httpCode,
+      } as ErrType);
+    }
+    // --- предикаты
+    const predicateHandlerResult = predicatesHandle(data, predicatesSuccess, predicatesError, httpCode);
+
+    // --- результат
+    return {
+      data,
+      httpCode: fetchResponse?.status ?? HTTP_CODE_UNDEF,
+      httpCodeDesc: fetchResponse?.statusText ?? '',
+      url: urlNext,
+      method,
+      isInitialData: false,
+      ...predicateHandlerResult,
+    } as ReturnType;
+  }
+  // --- QUERY
+  const result: UseQueryResult<ReturnExtType, ErrType> = useQuery(
+    queryKeyNext,
+    reqFunc,
     queryOptionsNext,
   );
-
   // ---
   if (queryOptions.initialData && !result.isFetched && result.data) {
     // --- предикаты
