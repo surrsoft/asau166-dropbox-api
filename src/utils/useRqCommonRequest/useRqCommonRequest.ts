@@ -149,7 +149,6 @@ export function useRqCommonRequest(
             validateStatus: () => true,
             ...headersNext
           };
-          console.log('!!-!!-!!  axiosOptions {221116114037}\n', axiosOptions); // del+
           fetchResponse = await axios.request(axiosOptions);
         }
       } catch (err: any) {

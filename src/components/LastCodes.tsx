@@ -2,6 +2,8 @@ import { Box, Heading, HStack, Tag } from "@chakra-ui/react";
 import { GapRowStyled } from "./GapRowStyled";
 
 export function LastCodes({zintCodes}: { zintCodes: string[] }) {
+  if (zintCodes.length < 1) return null;
+
   return <Box>
     <Heading size={'sm'}>last {zintCodes.length} codes:</Heading>
     <GapRowStyled height={8}/>

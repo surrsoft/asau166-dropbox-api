@@ -11,7 +11,7 @@ export enum ResultCodeEnum {
 }
 
 export interface ParamsType {
-  enabled: boolean
+  enabled?: boolean
   accessToken: string
   filePath: string
   /** see https://www.notion.so/surr/Types-dropbox-api-3c60a8a057264a78ad50efbf6d01b269 */
@@ -20,7 +20,7 @@ export interface ParamsType {
   data: string
 }
 
-export function useFilesUpload({enabled, accessToken, filePath, data, writeMode = {'.tag': 'overwrite'}}: ParamsType) {
+export function useFilesUpload({enabled = true, accessToken, filePath, data, writeMode = {'.tag': 'overwrite'}}: ParamsType) {
   return useRqCommonRequest({
     queryKey: ['asau166-dropbox-api-files_upload'],
     url: `${DROPBOX_URL_CONTENT}${DropboxMethodEnum.FILES__UPLOAD}`,

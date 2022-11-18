@@ -41,14 +41,12 @@ export function useFilesDownload({accessToken, filePath, enabled = true}: Params
 
   const {isDone, isSuccess, errorId, queryResultRaw} = result;
 
-  console.log('!!-!!-!!  queryResultRaw {221117165146}\n', queryResultRaw); // del+
-
   if (isDone && !isSuccess) {
     switch (errorId) {
-      case ResultCodeEnum.PATH_NOT_FOUND:
-        throw 'data file not found (err code 221116184054)'
       case ResultCodeEnum.UNAUTHORIZED:
         throw 'unauthorized (err code 221116183924)'
+      case ResultCodeEnum.PATH_NOT_FOUND:
+        return result;
       default:
         throw `other error (err code 221116181811); ${JSON.stringify(queryResultRaw || '')}`
     }

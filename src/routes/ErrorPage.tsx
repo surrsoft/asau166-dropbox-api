@@ -12,7 +12,7 @@ export function ErrorPage() {
     <GapRowStyled/>
     <Text>Sorry, an unexpected error has occurred.</Text>
     <GapRowStyled/>
-    <Text>
+    <Text wordBreak={'break-all'} p={4}>
       <i>{error?.statusText || error?.message || (loIsString(error) ? error : 'some error')}</i>
     </Text>
   </Flex>

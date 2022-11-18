@@ -9,3 +9,7 @@ export function accessTokenGet(): string | null {
 export function accessTokenSet(accessToken: string): void {
   localStorage.setItem(LSKeysEnum.ACCESS_TOKEN, accessToken);
 }
+
+export function accessTokenRemove(): void {
+  localStorage.removeItem(LSKeysEnum.ACCESS_TOKEN)
+}

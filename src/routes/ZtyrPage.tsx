@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { RoutesEnum } from '../types';
 import { useMemo, useState } from 'react';
 import { accessTokenGet } from '../apis/dropbox/accessTokenStore';
-import { useFilesDownload } from '../apis/dropbox/apiWrapper/useFilesDownload/useFilesDownload';
+import { ResultCodeEnum, useFilesDownload } from '../apis/dropbox/apiWrapper/useFilesDownload/useFilesDownload';
 import { ZintUtils } from '../apis/zintUtils/zintUtils';
 import { useFilesUpload } from '../apis/dropbox/apiWrapper/useFilesUpload/useFilesUpload';
 import { LastCodes } from '../components/LastCodes';
@@ -57,13 +57,23 @@ export function ZtyrPage() {
 
   const accessToken = accessTokenGet() || '';
 
-  // --- download; загрузка *з-строки (см. понятие [221116233200])
-
+  // --- download; загрузка *з-строки (см. понятие [221116233200]) т.е. содержимого
+  // *п-файла (см. понятие [221116130300])
   const {
     data: loadingZintsString,
     isProgress: loadingIsProgress,
-    queryResultRaw: {refetch: loadingRefetch}
+    queryResultRaw: {refetch: loadingRefetch},
+    errorId: loadingErrorId,
+    isDone: loadingIsDone
   } = useFilesDownload({accessToken, filePath: zintsPath, enabled: isAuth})
+
+  // для случая когда у пользователя ещё нет *п-файла (см. понятие [221116130300])
+  const {isProgress: initialIsProgress} = useFilesUpload({
+    enabled: loadingIsDone && loadingErrorId === ResultCodeEnum.PATH_NOT_FOUND,
+    accessToken,
+    data: '',
+    filePath: zintsPath,
+  })
 
   // --- zintsList, zintsListLast
 
@@ -75,8 +85,6 @@ export function ZtyrPage() {
     }
     return {zintsList, zintsListLast}
   }, [loadingZintsString]);
-  console.log('!!-!!-!!  zintsList {221117115256}\n', zintsList); // del+
-
 
   // --- выгрузка *zintsString в Dropbox
 
@@ -87,12 +95,11 @@ export function ZtyrPage() {
     filePath: zintsPath,
   })
   const {queryResultRaw: {refetch: uploadRefetch}, isProgress: uploadIsProgress} = uploadReqRes;
-  console.log('!!-!!-!!  uploadReqRes {221117002905}\n', uploadReqRes); // del+
 
   // --- handleSave
 
   const handleSave = async () => {
-    if (!(ZintUtils.codeVerify($zintCodeVal) && loadingZintsString)) {
+    if (!ZintUtils.codeVerify($zintCodeVal)) {
       $inputValidIsSet(false)
       return;
     }
@@ -105,7 +112,7 @@ export function ZtyrPage() {
     await loadingRefetch();
   }
 
-  const isProgress = loadingIsProgress || uploadIsProgress
+  const isProgress = loadingIsProgress || uploadIsProgress || initialIsProgress;
 
   // ---
 
