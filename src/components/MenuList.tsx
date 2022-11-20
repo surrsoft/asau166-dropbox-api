@@ -24,7 +24,8 @@ export interface PropsType {
 export function MenuList({onClose}: PropsType) {
   return <SidebarStyled>
     <NavLink to={RoutesEnum.ROOT} style={styleByActive} onClick={onClose}>main</NavLink>
-    <NavLink to={RoutesEnum.LOGIN} style={styleByActive} onClick={onClose}>authorize</NavLink>
-    <NavLink to={RoutesEnum.ZTYR} style={styleByActive} onClick={onClose}>ztyr</NavLink>
+    <NavLink to={RoutesEnum.AUTH_DROPBOX} style={styleByActive} onClick={onClose}>authorize dropbox</NavLink>
+    <NavLink to={RoutesEnum.AUTH_AIRTABLE} style={styleByActive} onClick={onClose}>authorize airtable</NavLink>
+    <NavLink to={RoutesEnum.ZTYR_APP} style={styleByActive} onClick={onClose}>ztyr</NavLink>
   </SidebarStyled>
 }
