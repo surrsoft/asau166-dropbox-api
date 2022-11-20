@@ -1,3 +1,4 @@
+/** SYNC [[221120170359]] */
 export const TOKEN_KEY = 'asau166_google_api_token_key'
 
 /**

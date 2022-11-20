@@ -1,7 +1,7 @@
-import { authUrlCook, handleAuthorize } from '../apis/dropbox/auth';
+import { authUrlCook, handleAuthorize } from '../../apis/dropbox/auth';
 import { Button, Heading, VStack, useToast } from '@chakra-ui/react'
-import { GapRowStyled } from '../components/common/GapRowStyled';
-import { accessTokenRemove } from '../apis/dropbox/accessTokenStore';
+import { GapRowStyled } from '../../components/common/GapRowStyled';
+import { accessTokenRemove } from '../../apis/dropbox/accessTokenStore';
 
 export function LoginPage() {
 

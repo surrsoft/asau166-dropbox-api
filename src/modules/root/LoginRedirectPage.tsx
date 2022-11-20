@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
-import { accessTokenFromUrlGet} from '../apis/dropbox/auth';
-import { accessTokenSet } from '../apis/dropbox/accessTokenStore';
+import { accessTokenFromUrlGet} from '../../apis/dropbox/auth';
+import { accessTokenSet } from '../../apis/dropbox/accessTokenStore';
 
 export function LoginRedirectPage() {
   const location = useLocation()

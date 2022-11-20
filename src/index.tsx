@@ -1,9 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, createHashRouter, RouterProvider } from "react-router-dom";
-import { LoginPage } from "./routes/LoginPage";
+import { LoginPage } from "./modules/root/LoginPage";
 import { RootPage } from "./modules/root/routes/RootPage";
-import { LoginRedirectPage } from './routes/LoginRedirectPage';
+import { LoginRedirectPage } from './modules/root/LoginRedirectPage';
 import { RoutesEnum } from './types';
 import { ZtyrPage } from './modules/ztyr/routes/ZtyrPage';
 import { ErrorPage } from './modules/root/routes/ErrorPage';

@@ -7,7 +7,8 @@
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_secret": "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",
     "redirect_uris": [
-      "http://localhost:22133/redirect-google"
+      "http://localhost:22133/redirect-google",
+      "https://surrsoft.github.io/asau166-dropbox-api/redirect-google-apis"
     ],
     "javascript_origins": [
       "http://localhost:22133",

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "predeploy": "env-cmd -f .env npm run build && copy .\\other\\redirect.html .\\build\\redirect.html",
+    "predeploy": "env-cmd -f .env npm run build && copy .\\other\\redirect.html .\\build\\redirect.html && copy .\\other\\redirect-google-apis.html .\\build\\redirect-google-apis.html",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
