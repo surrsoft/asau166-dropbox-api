@@ -2,13 +2,17 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, createHashRouter, RouterProvider } from "react-router-dom";
 import { LoginPage } from "./routes/LoginPage";
-import { RootPage } from "./routes/RootPage";
+import { RootPage } from "./modules/root/routes/RootPage";
 import { LoginRedirectPage } from './routes/LoginRedirectPage';
 import { RoutesEnum } from './types';
-import { ZtyrPage } from './routes/ZtyrPage';
-import { ErrorPage } from './routes/ErrorPage';
-import { AuthorizeAirtablePage } from './routes/AuthorizeAirtablePage';
-import { RedirectAirtablePage } from './routes/RedirectAirtablePage';
+import { ZtyrPage } from './modules/ztyr/routes/ZtyrPage';
+import { ErrorPage } from './modules/root/routes/ErrorPage';
+import { AuthorizeAirtablePage } from './modules/airtable/routes/AuthorizeAirtablePage';
+import { RedirectAirtablePage } from './modules/airtable/routes/RedirectAirtablePage';
+import { AuthorizeGoogleApis } from './modules/googleApiAuth/routes/AuthorizeGoogleApis';
+import { RedirectGooglePage } from './modules/googleApiAuth/routes/RedirectGooglePage';
+import { GoogleSheetsResearchPage } from './modules/googleSheetsResearch/routes/GoogleSheetsResearchPage';
+import { AppShopListPage } from './modules/appShopList/routes/AppShopListPage';
 
 const routes = [
   {
@@ -22,6 +26,11 @@ const routes = [
         errorElement: <ErrorPage/>,
       },
       {
+        path: RoutesEnum.AUTH_GOOGLE_APIS,
+        element: <AuthorizeGoogleApis/>,
+        errorElement: <ErrorPage/>,
+      },
+      {
         path: RoutesEnum.LOGIN_REDIRECT,
         element: <LoginRedirectPage/>,
         errorElement: <ErrorPage/>,
@@ -32,6 +41,11 @@ const routes = [
         errorElement: <ErrorPage/>,
       },
       {
+        path: RoutesEnum.REDIRECT_GOOGLE,
+        element: <RedirectGooglePage/>,
+        errorElement: <ErrorPage/>,
+      },
+      {
         path: RoutesEnum.ZTYR_APP,
         element: <ZtyrPage/>,
         errorElement: <ErrorPage/>,
@@ -39,6 +53,16 @@ const routes = [
       {
         path: RoutesEnum.AUTH_AIRTABLE,
         element: <AuthorizeAirtablePage/>,
+        errorElement: <ErrorPage/>,
+      },
+      {
+        path: RoutesEnum.GOOGLE_SHEETS_RESEARCH,
+        element: <GoogleSheetsResearchPage/>,
+        errorElement: <ErrorPage/>,
+      },
+      {
+        path: RoutesEnum.APP_SHOPPING_LIST,
+        element: <AppShopListPage/>,
         errorElement: <ErrorPage/>,
       }
     ]

@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
-import { tokenCreationRequest } from '../apis/airtable/airtableOAuthApi/tokenCreationRequest';
+import { tokenCreationRequest } from '../../../apis/airtable/airtableOAuthApi/tokenCreationRequest';
 
 /**
  * @param urlSearch -- строка вида '#code=...'
@@ -18,7 +18,6 @@ export function RedirectAirtablePage() {
   const location = useLocation()
   const hashString = location.search
   const {code, errMsg} = codeFromHash(hashString)
-  console.log('!!-!!-!! 1953- code {221119185758}\n', code); // del+
 
   useEffect(() => {
     if (code) {

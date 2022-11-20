@@ -1,14 +1,14 @@
 import { Button, Checkbox, Heading, HStack, Input, Text, Spinner, Box, Stack } from '@chakra-ui/react';
-import { handleAuthorize, isAuthorized } from '../apis/dropbox/auth';
-import { GapRowStyled } from '../components/common/GapRowStyled';
+import { handleAuthorize, isAuthorized } from '../../../apis/dropbox/auth';
+import { GapRowStyled } from '../../../components/common/GapRowStyled';
 import { useNavigate } from 'react-router-dom';
-import { RoutesEnum } from '../types';
+import { RoutesEnum } from '../../../types';
 import { useEffect, useMemo, useState } from 'react';
-import { accessTokenGet } from '../apis/dropbox/accessTokenStore';
-import { ResultCodeEnum, useFilesDownload } from '../apis/dropbox/apiWrapper/useFilesDownload/useFilesDownload';
-import { ZintUtils } from '../apis/zintUtils/zintUtils';
-import { useFilesUpload } from '../apis/dropbox/apiWrapper/useFilesUpload/useFilesUpload';
-import { LastCodes } from '../components/LastCodes';
+import { accessTokenGet } from '../../../apis/dropbox/accessTokenStore';
+import { ResultCodeEnum, useFilesDownload } from '../../../apis/dropbox/apiWrapper/useFilesDownload/useFilesDownload';
+import { ZintUtils } from '../../../apis/zintUtils/zintUtils';
+import { useFilesUpload } from '../../../apis/dropbox/apiWrapper/useFilesUpload/useFilesUpload';
+import { LastCodes } from '../../root/components/LastCodes';
 
 // путь к *п-файлу (см. понятие [221116130300])
 const zintsPath = process.env.REACT_APP_FILE_DATA_PATH || ''

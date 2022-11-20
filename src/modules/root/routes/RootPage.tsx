@@ -18,10 +18,10 @@ import {
   useDisclosure
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { theme, themeObj } from '../theme';
-import { RoutesEnum } from '../types';
+import { theme, themeObj } from '../../../theme';
+import { RoutesEnum } from '../../../types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useAccessTokenGetFromUrl } from '../apis/dropbox/useAccessTokenGetFromUrl';
+import { useAccessTokenGetFromUrl } from '../../../apis/dropbox/useAccessTokenGetFromUrl';
 import { MenuList, SidebarStyled } from '../components/MenuList';
 
 const appRev = process.env.REACT_APP_APP_REVISION || '';

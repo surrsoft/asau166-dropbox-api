@@ -1,5 +1,5 @@
 import { Box, Heading, HStack, Tag } from "@chakra-ui/react";
-import { GapRowStyled } from "./common/GapRowStyled";
+import { GapRowStyled } from "../../../components/common/GapRowStyled";
 
 export function LastCodes({zintCodes}: { zintCodes: string[] }) {
   if (zintCodes.length < 1) return null;

@@ -1,0 +1,17 @@
+{
+  "web": {
+    "client_id": "419947769611-lvf9j2qiue430c2nt0f8vvb268liqmhs.apps.googleusercontent.com",
+    "project_id": "asau163-outline",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": [
+      "http://localhost:22133/redirect-google"
+    ],
+    "javascript_origins": [
+      "http://localhost:22133",
+      "https://surrsoft.github.io"
+    ]
+  }
+}

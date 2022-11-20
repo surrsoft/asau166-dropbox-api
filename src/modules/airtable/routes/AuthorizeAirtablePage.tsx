@@ -1,7 +1,7 @@
 import { Box, Button, Heading } from '@chakra-ui/react';
-import { GapRowStyled } from '../components/common/GapRowStyled';
-import { AirtableAccessTokenStoreCls } from '../apis/airtable/AirtableAccessTokenStoreCls';
-import { authotirzationCodeRequest } from '../apis/airtable/airtableOAuthApi/authotirzationCodeRequest';
+import { GapRowStyled } from '../../../components/common/GapRowStyled';
+import { AirtableAccessTokenStoreCls } from '../../../apis/airtable/AirtableAccessTokenStoreCls';
+import { authotirzationCodeRequest } from '../../../apis/airtable/airtableOAuthApi/authotirzationCodeRequest';
 
 export function AuthorizeAirtablePage() {
 
