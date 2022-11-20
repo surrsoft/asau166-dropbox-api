@@ -4,6 +4,7 @@ import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStor
 import { GapRowStyled } from "../../../components/common/GapRowStyled";
 
 export function AuthorizeGoogleApis() {
+  console.log('!!-!!-!!  process.env.NODE_ENV {221120172706}\n', process.env.NODE_ENV); // del+
   const handleClick = () => {
     getAuthenticatedClient()
   }
