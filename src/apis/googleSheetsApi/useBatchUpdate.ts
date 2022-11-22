@@ -31,7 +31,7 @@ export interface PredicatesType {
  * @param predicates
  */
 export function useBatchUpdate({accessToken, spreadsheetId, predicates}: ParamsType) {
-  const url = `${URL_SPREADSHEETS}/${spreadsheetId}:batchUpdate`
+  const url = `${URL_SPREADSHEETS}/${spreadsheetId}:batchUpdate` // back
 
   const result = useMutation<UpdateRequestBodyType, any, VariablesType>((variables: VariablesType) => {
     return axios.post(url, variables.body, {

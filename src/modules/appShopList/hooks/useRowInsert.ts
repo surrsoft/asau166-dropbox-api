@@ -1,9 +1,15 @@
-import { useBatchUpdate, VariablesType } from '../../../apis/googleSheetsApi/useBatchUpdate';
+import { useToast } from '@chakra-ui/react';
 import { ASAU170_SPREADSHEET_ID } from '../configs';
+import { useBatchUpdate, VariablesType } from '../../../apis/googleSheetsApi/useBatchUpdate';
+import { isErrorType } from '../../../apis/googleSheetsApi/types/types';
 import { BatchUpdateRequestBodyType } from '../../../apis/googleSheetsApi/types/BatchUpdateRequestBodyType';
 import { DimensionEnum } from '../../../apis/googleSheetsApi/enums/DimensionEnum';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
-import { useToast } from '@chakra-ui/react';
+
+export enum ResultCodeEnum {
+  SUCCESS = 'SUCCESS',
+  INVALID_ARGUMENT = 'INVALID_ARGUMENT'
+}
 
 /**
  * Вставка пустого ряда
@@ -18,11 +24,11 @@ export function useRowInsert() {
     predicates: {
       predicatesSuccess: [{id: 'success', predicate: () => true, httpCode: 200}],
       predicatesError: [
-        {id: 'err1', predicate: () => true, httpCode: 400}
+        {id: ResultCodeEnum.SUCCESS, predicate: () => true, httpCode: 400},
+        {id: ResultCodeEnum.INVALID_ARGUMENT, predicate: isErrorType, httpCode: 400},
       ]
     }
   })
-  console.log('!!-!!-!! 0000- insertMutation {221122230441}\n', insertMutation); // del+
 
   const {
     resultRaw: {
@@ -41,7 +47,7 @@ export function useRowInsert() {
     if (insertIsSuccessExtended) {
       toast({status: 'success', title: 'success', position: 'top', duration: 1000})
     } else {
-      toast({status: 'error', title: 'error', description: 'error at entry addition', position: 'top'})
+      toast({status: 'error', title: 'error', description: 'error to add entry', position: 'top'})
     }
     insertReset()
   }
