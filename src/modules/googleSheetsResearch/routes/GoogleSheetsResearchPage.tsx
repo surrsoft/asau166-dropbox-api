@@ -3,7 +3,7 @@ import { GapRowStyled } from '../../../components/common/GapRowStyled';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
 import { ASAU170_SPREADSHEET_ID, ASAU170_SHEET_PRODUCTS_NAME } from '../../appShopList/configs';
 import JSONPretty from 'react-json-pretty'
-import { useSheetValuesGet } from '../../../apis/googleSheets/useSheetValuesGet';
+import { useSheetValuesGet } from '../../../apis/googleSheetsApi/useSheetValuesGet';
 
 export function GoogleSheetsResearchPage() {
   const accessToken = GoogleApiTokenStore.tokenGet()

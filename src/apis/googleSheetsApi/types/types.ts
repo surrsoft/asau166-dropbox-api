@@ -1,6 +1,16 @@
 import loIsNumber from 'lodash/isNumber';
 import loIsString from 'lodash/isString';
 
+/** идентификатор *книги */
+export type SpreadsheetId = string;
+
+/** идентификатор *листа */
+export type SheetId = string;
+
+/** массив значений */
+export type ListValueType = any[]
+
+/** */
 export interface ErrorType {
   error: {
     code: number,
@@ -9,12 +19,14 @@ export interface ErrorType {
   }
 }
 
+/** */
 export function isErrorType(data: any): data is ErrorType {
   if (!data) return false;
   if (!data.error) return false;
   return loIsNumber(data.error.code) && loIsString(data.error.message) && loIsString(data.error.status)
 }
 
+/** */
 export interface GetValuesParamsType {
   accessToken: string,
   spreadsheetId: string,
@@ -24,14 +36,3 @@ export interface GetValuesParamsType {
   diap: string
 }
 
-/**
- * @see https://developers.google.com/sheets/api/reference/rest/v4/Dimension
- */
-export enum DimensionEnum {
-  DIMENSION_UNSPECIFIED = 'DIMENSION_UNSPECIFIED',
-  ROWS = 'ROWS',
-  COLUMNS = 'COLUMNS'
-}
-
-/** массив значений */
-export type ListValueType = any[]

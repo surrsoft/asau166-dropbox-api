@@ -1,4 +1,5 @@
-import { DimensionEnum, ListValueType } from './types';
+import { ListValueType } from './types';
+import { DimensionEnum } from '../enums/DimensionEnum';
 
 /**
  * @see https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values#resource-valuerange

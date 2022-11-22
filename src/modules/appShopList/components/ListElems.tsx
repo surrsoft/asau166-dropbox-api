@@ -1,6 +1,6 @@
-import { ListValueType } from '../../../apis/googleSheets/types/types';
 import { Box } from '@chakra-ui/react';
 import { ListElem } from './ListElem';
+import { ListValueType } from '../../../apis/googleSheetsApi/types/types';
 
 export interface PropsType {
   values: ListValueType[]

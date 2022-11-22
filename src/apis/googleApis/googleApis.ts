@@ -16,7 +16,7 @@ const responseType = {
  *
  * @see https://developers.google.com/identity/protocols/oauth2/web-server#creatingclient
  */
-export function getAuthenticatedClient() {
+export function gotoAuth() {
   const redirectUriIndex = process.env.NODE_ENV === 'development' ? 0 : 1;
   const url = `https://accounts.google.com/o/oauth2/v2/auth
     ?client_id=${keys.web.client_id}
@@ -28,8 +28,6 @@ export function getAuthenticatedClient() {
     &include_granted_scopes=true
   `;
   const urlNext = url.replace(/\r\n|\s+/g, '');
-  debugger; // del+
-  console.log('!!-!!-!!  urlNext {221120171248}\n', urlNext); // del+
   // ---
   window.location.href = urlNext;
 }

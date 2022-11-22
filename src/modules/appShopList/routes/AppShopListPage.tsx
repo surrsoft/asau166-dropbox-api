@@ -1,10 +1,19 @@
-import { Box, Button, Heading } from '@chakra-ui/react';
+import { Box, Button, Heading, IconButton, Spinner } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons'
 import { GapRowStyled } from '../../../components/common/GapRowStyled';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
 import JSONPretty from 'react-json-pretty'
-import { useSheetValuesGet } from '../../../apis/googleSheets/useSheetValuesGet';
 import { ASAU170_SHEET_PRODUCTS_NAME, ASAU170_SPREADSHEET_ID } from '../configs';
 import { ListElems } from '../components/ListElems';
+import { useSheetValuesGet } from '../../../apis/googleSheetsApi/useSheetValuesGet';
+import { useValuesGetErrorHandle } from '../hooks/useValuesGetErrorHandle';
+import styled from 'styled-components';
+import { useState } from 'react';
+import { useRowInsert } from '../hooks/useRowInsert';
+
+const ButtonsPaneStyled = styled.div`
+  display: flex;
+`
 
 /**
  * app id: [asau170]
@@ -23,14 +32,34 @@ export function AppShopListPage() {
     isDone: valuesIsDone,
     isProgress: valuesIsProgress,
     queryResultRaw: {refetch: valuesRefetch},
-    data: valuesData
+    data: valuesData,
+    errorId: valuesErrorId
   } = result;
   console.log('!!-!!-!!  valuesData {221120161852}\n', valuesData); // del+
+
+  useValuesGetErrorHandle({enabled: valuesIsDone, errorId: valuesErrorId})
+
+  // --- insert mutation
+
+  const {onHandle: handleAdd} = useRowInsert()
+
+  // ---
+
+  const [temp, tempSet] = useState(0);
 
   return <Box>
     <Heading size={'mb'}>Shopping List App</Heading>
     <GapRowStyled/>
-    {valuesIsSuccess && <ListElems values={valuesData.values}/>}
-    {!valuesIsSuccess && <JSONPretty data={result.queryResultRaw?.data?.data}></JSONPretty>}
+    {valuesIsProgress && <Spinner/>}
+    {valuesIsSuccess && <Box>
+			<ButtonsPaneStyled>
+				<IconButton aria-label={'button Add'} icon={<AddIcon/>} onClick={handleAdd}/>
+			</ButtonsPaneStyled>
+			<GapRowStyled height={8}/>
+			<ListElems values={valuesData.values}/>
+		</Box>}
+    {valuesIsDone && !valuesIsSuccess && <JSONPretty data={result.queryResultRaw?.data?.data}></JSONPretty>}
+    <GapRowStyled/>
+    <Button onClick={() => tempSet(temp + 1)}>temp</Button>
   </Box>
 }

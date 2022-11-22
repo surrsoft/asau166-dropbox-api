@@ -9,7 +9,7 @@ import { ZtyrPage } from './modules/ztyr/routes/ZtyrPage';
 import { ErrorPage } from './modules/root/routes/ErrorPage';
 import { AuthorizeAirtablePage } from './modules/airtable/routes/AuthorizeAirtablePage';
 import { RedirectAirtablePage } from './modules/airtable/routes/RedirectAirtablePage';
-import { AuthorizeGoogleApis } from './modules/googleApiAuth/routes/AuthorizeGoogleApis';
+import { AuthorizeGoogleApisPage } from './modules/googleApiAuth/routes/AuthorizeGoogleApisPage';
 import { RedirectGooglePage } from './modules/googleApiAuth/routes/RedirectGooglePage';
 import { GoogleSheetsResearchPage } from './modules/googleSheetsResearch/routes/GoogleSheetsResearchPage';
 import { AppShopListPage } from './modules/appShopList/routes/AppShopListPage';
@@ -27,7 +27,7 @@ const routes = [
       },
       {
         path: RoutesEnum.AUTH_GOOGLE_APIS,
-        element: <AuthorizeGoogleApis/>,
+        element: <AuthorizeGoogleApisPage/>,
         errorElement: <ErrorPage/>,
       },
       {

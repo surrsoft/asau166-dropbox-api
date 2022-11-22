@@ -2,7 +2,9 @@ import { PredicateDescriptor } from '../types/PredicateDescriptor';
 import { PredicateHandleRestultType } from '../types/PredicateHandleRestultType';
 import { ResultSuccessEnum } from '../enums/ResultSuccessEnum';
 
-/**  */
+/**
+ * ID [[221122233158]] rev 1 1.0.0 2022-11-22
+ */
 export function predicatesHandle(
   data: any,
   predicatesSuccess: PredicateDescriptor[],
@@ -38,5 +40,5 @@ export function predicatesHandle(
   }
 
   // ---
-  return { predicateSuccessMatchedId, predicateErrorMatchedId, resultStatus };
+  return {predicateSuccessMatchedId, predicateErrorMatchedId, resultStatus};
 }

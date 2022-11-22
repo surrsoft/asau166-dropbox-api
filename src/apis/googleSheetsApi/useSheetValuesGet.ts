@@ -11,31 +11,7 @@ export enum ResponseTypeEnum {
 }
 
 /**
- * ОСОБЕННОСТИ:
- * -- пустые хвостовые ячейки не попадают в результата, ведущие пустые ячейки попадают - как пустая строка ""
- * -- полностью пустые строки не попадают в результат
- *
- * EXAMPLE RESULT:
- * <code>
- *   {
- *   "range": "sheet1!A1:B10",
- *   "majorDimension": "ROWS",
- *   "values": [
- *     [
- *       "Ivan",
- *       "300"
- *     ],
- *     [],
- *     [
- *       "some"
- *     ],
- *     [
- *       "",
- *       "empty"
- *     ]
- *   ]
- * }
- * </code>
+ * @see про метод get - https://www.notion.so/surr/spreadsheets-values-get-google-sheets-api-d93b185976e3412fab87aa365d8cb008
  */
 export function useSheetValuesGet(
   enabled: boolean,
