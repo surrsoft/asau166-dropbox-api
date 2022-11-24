@@ -94,8 +94,9 @@ export function mutationHandle(
     ret.isDone = true;
   }
   // ---
+  console.log('!!-!!-!!  mutationResult {221123214442}\n', mutationResult); // del+
   const {predicateSuccessMatchedId, predicateErrorMatchedId, resultStatus} = predicatesHandle(
-    mutationResult.data,
+    mutationResult.isSuccess ? mutationResult.data : mutationResult.error?.response?.data,
     predicatesSuccess,
     predicatesError,
     ret.httpCode

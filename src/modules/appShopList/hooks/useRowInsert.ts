@@ -1,20 +1,26 @@
 import { useToast } from '@chakra-ui/react';
-import { ASAU170_SPREADSHEET_ID } from '../configs';
-import { useBatchUpdate, VariablesType } from '../../../apis/googleSheetsApi/useBatchUpdate';
+import { ASAU170_SPREADSHEET_ID, SHEET_PRODUCTS_INFO } from '../constants';
 import { isErrorType } from '../../../apis/googleSheetsApi/types/types';
-import { BatchUpdateRequestBodyType } from '../../../apis/googleSheetsApi/types/BatchUpdateRequestBodyType';
 import { DimensionEnum } from '../../../apis/googleSheetsApi/enums/DimensionEnum';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
+import { useBatchUpdate, VariablesType } from '../../../apis/googleSheetsApi/useBatchUpdate';
+import { Schema$BatchUpdateSpreadsheetRequest } from '../../../apis/googleSheetsApi/types/sheetsV4types/sheetsV4types';
 
 export enum ResultCodeEnum {
   SUCCESS = 'SUCCESS',
   INVALID_ARGUMENT = 'INVALID_ARGUMENT'
 }
 
+interface ReturnType {
+  /** инициирует работу по вставке ряда */
+  perform: () => void,
+  insertIsProgress: boolean
+}
+
 /**
- * Вставка пустого ряда
+ * Вставка пустого ряда на лист 'products' и заполнение его значением ...
  */
-export function useRowInsert() {
+export function useRowInsert(): ReturnType {
   const accessToken = GoogleApiTokenStore.tokenGet()
   const toast = useToast()
 
@@ -22,10 +28,14 @@ export function useRowInsert() {
     accessToken,
     spreadsheetId: ASAU170_SPREADSHEET_ID,
     predicates: {
-      predicatesSuccess: [{id: 'success', predicate: () => true, httpCode: 200}],
+      predicatesSuccess: [{id: ResultCodeEnum.SUCCESS, predicate: () => true, httpCode: 200}],
       predicatesError: [
-        {id: ResultCodeEnum.SUCCESS, predicate: () => true, httpCode: 400},
-        {id: ResultCodeEnum.INVALID_ARGUMENT, predicate: isErrorType, httpCode: 400},
+        {
+          id: ResultCodeEnum.INVALID_ARGUMENT, predicate: (data: any) => {
+            console.log('!!-!!-!!  data {221123214344}\n', data); // del+
+            return isErrorType(data) && data?.error?.status === 'INVALID_ARGUMENT'
+          }, httpCode: 400
+        },
       ]
     }
   })
@@ -38,31 +48,49 @@ export function useRowInsert() {
     },
     resultExtended: {
       isDone: insertIsDone,
-      isSuccess: insertIsSuccessExtended
+      isSuccess: insertIsSuccessExt,
+      errMessage: insertErrMessageExt
     }
   } = insertMutation;
 
   if (insertIsDone) {
-    console.log('!!-!!-!! 0000- insertMutation.resultExtended {221123000041}\n', insertMutation.resultExtended); // del+
-    if (insertIsSuccessExtended) {
+    if (insertIsSuccessExt) {
       toast({status: 'success', title: 'success', position: 'top', duration: 1000})
     } else {
       toast({status: 'error', title: 'error', description: 'error to add entry', position: 'top'})
+      console.log('!!-!!-!!  insertMutation.resultExtended {221123214312}\n', insertMutation.resultExtended); // del+
+      console.error('BR: ' + insertErrMessageExt)
     }
     insertReset()
   }
 
-  const onHandle = async () => {
-    const updateBody: BatchUpdateRequestBodyType = {
+  const onPerform = async () => {
+    const updateBody: Schema$BatchUpdateSpreadsheetRequest = {
       requests: [{
         insertDimension: {
           range: {
             dimension: DimensionEnum.ROWS,
-            sheetId: 0,
+            sheetId: SHEET_PRODUCTS_INFO.sheetId,
             startIndex: 1,
             endIndex: 2
           },
           inheritFromBefore: false
+        }
+      }, {
+        updateCells: {
+          rows: [
+            {
+              values: [
+                {userEnteredValue: {stringValue: 'hello'}},
+              ]
+            }
+          ],
+          range: {
+            sheetId: SHEET_PRODUCTS_INFO.sheetId,
+            startRowIndex: 1,
+            endRowIndex: 2
+          },
+          fields: '*'
         }
       }],
     }
@@ -70,5 +98,5 @@ export function useRowInsert() {
     await insertMutate({body: updateBody} as VariablesType)
   }
 
-  return {onHandle, insertIsProgress}
+  return {perform: onPerform, insertIsProgress}
 }

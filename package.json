@@ -31,7 +31,6 @@
     "env-cmd": "^10.1.0",
     "framer-motion": "^7.6.7",
     "gh-pages": "^4.0.0",
-    "googleapis": "^109.0.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -43,7 +42,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "googleapis-common": "^6.0.3"
   },
   "eslintConfig": {
     "extends": [

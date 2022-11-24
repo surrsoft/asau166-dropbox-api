@@ -1,9 +1,10 @@
 import { Box, Button, Heading } from '@chakra-ui/react';
 import { GapRowStyled } from '../../../components/common/GapRowStyled';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
-import { ASAU170_SPREADSHEET_ID, ASAU170_SHEET_PRODUCTS_NAME } from '../../appShopList/configs';
+import { ASAU170_SPREADSHEET_ID} from '../../appShopList/constants';
 import JSONPretty from 'react-json-pretty'
 import { useSheetValuesGet } from '../../../apis/googleSheetsApi/useSheetValuesGet';
+import { ASAU170_SHEET_PRODUCTS_NAME } from '../constants';
 
 export function GoogleSheetsResearchPage() {
   const accessToken = GoogleApiTokenStore.tokenGet()

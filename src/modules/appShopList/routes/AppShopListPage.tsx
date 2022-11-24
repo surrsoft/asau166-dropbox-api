@@ -3,7 +3,7 @@ import { AddIcon } from '@chakra-ui/icons'
 import { GapRowStyled } from '../../../components/common/GapRowStyled';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
 import JSONPretty from 'react-json-pretty'
-import { ASAU170_SHEET_PRODUCTS_NAME, ASAU170_SPREADSHEET_ID } from '../configs';
+import { ASAU170_SPREADSHEET_ID, SHEET_PRODUCTS_INFO } from '../constants';
 import { ListElems } from '../components/ListElems';
 import { useSheetValuesGet } from '../../../apis/googleSheetsApi/useSheetValuesGet';
 import { useValuesGetErrorHandle } from '../hooks/useValuesGetErrorHandle';
@@ -23,7 +23,7 @@ export function AppShopListPage() {
 
   const result = useSheetValuesGet(true, {
     accessToken,
-    sheetName: ASAU170_SHEET_PRODUCTS_NAME,
+    sheetName: SHEET_PRODUCTS_INFO.name,
     diap: 'A1:B1000',
     spreadsheetId: ASAU170_SPREADSHEET_ID
   })
@@ -41,7 +41,7 @@ export function AppShopListPage() {
 
   // --- insert mutation
 
-  const {onHandle: handleAdd} = useRowInsert()
+  const {perform: handleAdd} = useRowInsert()
 
   // ---
 

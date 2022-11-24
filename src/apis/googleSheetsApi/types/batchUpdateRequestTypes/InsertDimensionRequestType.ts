@@ -1,4 +1,4 @@
-import { DimensionRangeType } from './DimensionRangeType';
+import { DimensionRangeType } from '../DimensionRangeType';
 
 /**
  * @see https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#InsertDimensionRequest

@@ -2,23 +2,28 @@ import { URL_SPREADSHEETS } from './constants';
 import { SpreadsheetId } from './types/types';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { UpdateRequestBodyType } from './types/UpdateRequestBodyType';
-import { AsyncModeEnum, mutationHandle } from '../../utils/useRqCommonRequest/mutationHandle';
+import { AsyncModeEnum, mutationHandle, MutationHandleReturnType } from '../../utils/useRqCommonRequest/mutationHandle';
 import { PredicateDescriptor } from '../../utils/useRqCommonRequest/types/PredicateDescriptor';
-
-export interface ParamsType {
-  accessToken: string;
-  spreadsheetId: SpreadsheetId;
-  predicates?: PredicatesType
-}
+import { Schema$BatchUpdateSpreadsheetRequest } from './types/sheetsV4types/sheetsV4types';
 
 export interface VariablesType {
-  body: any,
+  body: Schema$BatchUpdateSpreadsheetRequest,
 }
 
 export interface PredicatesType {
   predicatesSuccess?: PredicateDescriptor[],
   predicatesError?: PredicateDescriptor[]
+}
+
+export interface ReturnType {
+  resultRaw: any
+  resultExtended: MutationHandleReturnType
+}
+
+export interface ParamsType {
+  accessToken: string;
+  spreadsheetId: SpreadsheetId;
+  predicates?: PredicatesType
 }
 
 /**
@@ -30,10 +35,10 @@ export interface PredicatesType {
  * @param spreadsheetId
  * @param predicates
  */
-export function useBatchUpdate({accessToken, spreadsheetId, predicates}: ParamsType) {
+export function useBatchUpdate({accessToken, spreadsheetId, predicates}: ParamsType): ReturnType {
   const url = `${URL_SPREADSHEETS}/${spreadsheetId}:batchUpdate` // back
 
-  const result = useMutation<UpdateRequestBodyType, any, VariablesType>((variables: VariablesType) => {
+  const result = useMutation<any, any, VariablesType>((variables: VariablesType) => {
     return axios.post(url, variables.body, {
       headers: {
         'Authorization': `Bearer ${accessToken}`
