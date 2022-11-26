@@ -6,9 +6,11 @@ export interface PropsType {
   values: SheetValuesType[]
   /** должен вызываться при нажатии на кнопку удаления элемента спика */
   onDelete: (elem: SheetValuesType) => void
+  onToggle: (elem: SheetValuesType, isChecked: boolean) => void
+  disabled?: boolean
 }
 
-export function ListElems({values, onDelete}: PropsType) {
+export function ListElems({values, onDelete, disabled = false, onToggle}: PropsType) {
 
   return <Box
     display={'flex'}
@@ -21,7 +23,13 @@ export function ListElems({values, onDelete}: PropsType) {
   >
     {
       values.map((el: SheetValuesType) => {
-        return <ListElem key={el.id} data={el} onDelete={onDelete}/>
+        return <ListElem
+          key={el.id}
+          data={el}
+          onDelete={onDelete}
+          onToggle={onToggle}
+          disabled={disabled}
+        />
       })
     }
   </Box>

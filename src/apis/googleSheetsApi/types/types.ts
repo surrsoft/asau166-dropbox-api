@@ -5,7 +5,7 @@ import loIsString from 'lodash/isString';
 export type SpreadsheetId = string;
 
 /** идентификатор *листа */
-export type SheetId = string;
+export type SheetId = number;
 
 /** массив значений */
 export type ListValueType = any[]

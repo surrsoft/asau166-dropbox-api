@@ -1,5 +1,5 @@
-import { useToast } from '@chakra-ui/react';
-import { ASAU170_SPREADSHEET_ID, SHEET_PRODUCTS_INFO } from '../constants';
+import { useToast, UseToastOptions } from '@chakra-ui/react';
+import { ASAU170_SPREADSHEET_ID, SHEET_PRODUCTS_INFO, toastError, toastSuccess } from '../constants';
 import { isErrorType } from '../../../apis/googleSheetsApi/types/types';
 import { DimensionEnum } from '../../../apis/googleSheetsApi/enums/DimensionEnum';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
@@ -60,10 +60,10 @@ export function useRowInsert({onSuccess, onError}: PropsType): ReturnType {
 
   if (insertIsDone) {
     if (insertIsSuccessExt) {
-      toast({status: 'success', title: 'success', position: 'top', duration: 1000})
+      toast({...toastSuccess, description: 'success add'})
       onSuccess?.()
     } else {
-      toast({status: 'error', title: 'error', description: 'error to add entry', position: 'top'})
+      toast({...toastError, description: 'error to add entry'})
       console.error('BR: ' + insertErrMessageExt)
       onError?.()
     }

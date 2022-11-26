@@ -3,17 +3,19 @@ import { AddIcon } from '@chakra-ui/icons'
 import { GapRowStyled } from '../../../components/common/GapRowStyled';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
 import JSONPretty from 'react-json-pretty'
-import { ASAU170_SPREADSHEET_ID, SHEET_PRODUCTS_INFO } from '../constants';
+import { ASAU170_SPREADSHEET_ID, CONF_NODATA_ROWS_COUNT, SHEET_PRODUCTS_INFO } from '../constants';
 import { ListElems } from '../components/ListElems';
 import { useSheetValuesGet } from '../../../apis/googleSheetsApi/useSheetValuesGet';
 import { useValuesGetErrorHandle } from '../hooks/useValuesGetErrorHandle';
 import styled from 'styled-components';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRowInsert } from '../hooks/useRowInsert';
 import { gotoAuth } from '../../../apis/googleApis/googleApis';
 import { textAdapt } from '../../../utils/utils';
 import { idGen, mapData } from '../utils/utils';
 import { SheetValuesType } from '../types/types';
+import { useBatchUpdateB } from '../../../apis/googleSheetsApi/useBatchUpdateB';
+import { useRowDelete } from '../hooks/useRowDelete';
 
 const ButtonsPaneStyled = styled.div`
   display: flex;
@@ -46,7 +48,6 @@ export function AppShopListPage() {
     data: valuesData,
     errorId: valuesErrorId
   } = result;
-  console.log('!!-!!-!!  result {221126154022}\n', result); // del+
 
   useEffect(() => {
     if (valuesIsDone && valuesData?.values) {
@@ -102,13 +103,34 @@ export function AppShopListPage() {
   }
 
   // ---
-  const handleOnDelete = (data: SheetValuesType) => {
-    console.log('!!-!!-!!  data {221126210838}\n', data); // del+
+  const {perform: handleDelete, isProgress: deleteIsProgress}
+    = useRowDelete({valuesData: $valuesData, valuesDataSet: $valuesDataSet})
+
+  // ---
+  const handleToggle = (elem: SheetValuesType, isChecked: boolean) => {
+    console.log('!!-!!-!! 0014- elem {221127001450}\n', elem); // del+
+    console.log('!!-!!-!! 0014- isChecked {221127001457}\n', isChecked); // del+
+    const index = $valuesData.findIndex(el => el.id === elem.id)
+    if (index !== -1) {
+      if (isChecked) {
+        const indexChecked = $valuesData.findIndex(el => el.isChecked)
+        const moved = $valuesData.splice(index, 1)[0]
+        moved.isChecked = true;
+        $valuesData.splice(indexChecked - 1, 0, moved)
+        $valuesDataSet([...$valuesData])
+      } else {
+        const moved = $valuesData.splice(index, 1)[0]
+        moved.isChecked = false;
+        $valuesData.splice(0, 0, moved)
+        $valuesDataSet([...$valuesData])
+      }
+    }
   }
 
   // ---
-  const isButtonAddDisabled = textAdapt($newEntryVal).length < 1 || insertIsProgress;
-  const isInputDisabled = insertIsProgress;
+  const isButtonAddDisabled = textAdapt($newEntryVal).length < 1 || insertIsProgress || deleteIsProgress;
+  const isInputDisabled = insertIsProgress || deleteIsProgress;
+  const isListDisabled = insertIsProgress || deleteIsProgress;
 
   return <Box>
     <Heading size={'mb'}>Shopping List App</Heading>
@@ -133,7 +155,12 @@ export function AppShopListPage() {
 			</ButtonsPaneStyled>
 
 			<GapRowStyled height={8}/>
-			<ListElems values={$valuesData} onDelete={handleOnDelete}/>
+			<ListElems
+				values={$valuesData}
+				onDelete={handleDelete}
+				onToggle={handleToggle}
+				disabled={isListDisabled}
+			/>
 		</Box>}
     {
       valuesIsDone && !valuesIsSuccess && !isNeetToAuth
