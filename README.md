@@ -46,4 +46,5 @@
 - `npm run start`
 
 # деплой в GitHub как GitHub Pages
+- поменять версию в файле `.env` (переменная `REACT_APP_APP_REVISION`)
 - `npm run deploy`

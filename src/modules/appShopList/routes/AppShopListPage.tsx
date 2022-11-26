@@ -1,4 +1,4 @@
-import { Box, Button, Heading, IconButton, Spinner } from '@chakra-ui/react';
+import { Box, Button, Heading, IconButton, Input, Spinner } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons'
 import { GapRowStyled } from '../../../components/common/GapRowStyled';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
@@ -8,11 +8,20 @@ import { ListElems } from '../components/ListElems';
 import { useSheetValuesGet } from '../../../apis/googleSheetsApi/useSheetValuesGet';
 import { useValuesGetErrorHandle } from '../hooks/useValuesGetErrorHandle';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRowInsert } from '../hooks/useRowInsert';
+import { gotoAuth } from '../../../apis/googleApis/googleApis';
+import { textAdapt } from '../../../utils/utils';
+import { idGen, mapData } from '../utils/utils';
+import { SheetValuesType } from '../types/types';
 
 const ButtonsPaneStyled = styled.div`
   display: flex;
+  align-items: center;
+  background-color: #e3bebe;
+  padding: 8px;
+  border-radius: 8px;
+  max-width: 300px;
 `
 
 /**
@@ -20,46 +29,117 @@ const ButtonsPaneStyled = styled.div`
  */
 export function AppShopListPage() {
   const accessToken = GoogleApiTokenStore.tokenGet()
+  // состояние списка продуктов
+  const [$valuesData, $valuesDataSet] = useState<SheetValuesType[]>([]);
 
+  // --- get data
   const result = useSheetValuesGet(true, {
     accessToken,
     sheetName: SHEET_PRODUCTS_INFO.name,
-    diap: 'A1:B1000',
+    diap: 'A:C',
     spreadsheetId: ASAU170_SPREADSHEET_ID
   })
   const {
     isSuccess: valuesIsSuccess,
     isDone: valuesIsDone,
     isProgress: valuesIsProgress,
-    queryResultRaw: {refetch: valuesRefetch},
     data: valuesData,
     errorId: valuesErrorId
   } = result;
-  console.log('!!-!!-!!  valuesData {221120161852}\n', valuesData); // del+
+  console.log('!!-!!-!!  result {221126154022}\n', result); // del+
 
-  useValuesGetErrorHandle({enabled: valuesIsDone, errorId: valuesErrorId})
+  useEffect(() => {
+    if (valuesIsDone && valuesData?.values) {
+      const values = mapData(valuesData?.values)
+      $valuesDataSet(values)
+    }
+  }, [valuesIsDone, valuesData?.values]);
 
-  // --- insert mutation
+  const isNeetToAuth = useValuesGetErrorHandle({enabled: valuesIsDone, errorId: valuesErrorId})
 
-  const {perform: handleAdd} = useRowInsert()
+  // --- insert product
+
+  // добавляемый элемент
+  const [$elemAdded, $elemAddingSet] = useState<SheetValuesType | null>(null);
+  const {perform: insertHandleAdd, insertIsProgress} = useRowInsert({
+    onSuccess: () => {
+      if ($elemAdded) {
+        const values = [$elemAdded, ...$valuesData]
+        $valuesDataSet(values)
+      }
+    },
+  })
+
+  const handleOnAdd = async () => {
+    const val = textAdapt($newEntryVal)
+    const obj = {name: val, isChecked: false, id: idGen()} as SheetValuesType
+    $elemAddingSet(obj)
+    await insertHandleAdd(obj)
+  }
 
   // ---
+  const handleToAuth = () => {
+    gotoAuth()
+  }
 
+  // --- temp
   const [temp, tempSet] = useState(0);
+  const handleTemp = () => {
+    $valuesDataSet([
+      {
+        id: idGen(),
+        name: 'test-test',
+        isChecked: false
+      } as SheetValuesType
+    ])
+  }
+
+  // ---
+  const [$newEntryVal, $newEntryValSet] = useState('');
+  const handleNewEntryOnChange = (event: any) => {
+    const val = event.target?.value || '';
+    $newEntryValSet(val)
+  }
+
+  // ---
+  const handleOnDelete = (data: SheetValuesType) => {
+    console.log('!!-!!-!!  data {221126210838}\n', data); // del+
+  }
+
+  // ---
+  const isButtonAddDisabled = textAdapt($newEntryVal).length < 1 || insertIsProgress;
+  const isInputDisabled = insertIsProgress;
 
   return <Box>
     <Heading size={'mb'}>Shopping List App</Heading>
     <GapRowStyled/>
     {valuesIsProgress && <Spinner/>}
+    {isNeetToAuth && <Button onClick={handleToAuth}>to Google Sheets Auth</Button>}
     {valuesIsSuccess && <Box>
 			<ButtonsPaneStyled>
-				<IconButton aria-label={'button Add'} icon={<AddIcon/>} onClick={handleAdd}/>
+				<Input
+					bg={'white'}
+					value={$newEntryVal}
+					onChange={handleNewEntryOnChange}
+					disabled={isInputDisabled}
+				/>
+        {!insertIsProgress && <IconButton
+					aria-label={'button Add'}
+					icon={<AddIcon/>}
+					onClick={handleOnAdd} ml={'8px'}
+					disabled={isButtonAddDisabled}
+				/>}
+        {insertIsProgress && <Box w={'40px'} h={'40px'} p={'6px'} ml={'8px'}><Spinner/></Box>}
 			</ButtonsPaneStyled>
+
 			<GapRowStyled height={8}/>
-			<ListElems values={valuesData.values}/>
+			<ListElems values={$valuesData} onDelete={handleOnDelete}/>
 		</Box>}
-    {valuesIsDone && !valuesIsSuccess && <JSONPretty data={result.queryResultRaw?.data?.data}></JSONPretty>}
+    {
+      valuesIsDone && !valuesIsSuccess && !isNeetToAuth
+      && <JSONPretty data={result.queryResultRaw?.data?.data}></JSONPretty>
+    }
     <GapRowStyled/>
-    <Button onClick={() => tempSet(temp + 1)}>temp</Button>
+    <Button onClick={handleTemp}>temp</Button>
   </Box>
 }

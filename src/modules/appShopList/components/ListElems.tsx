@@ -1,12 +1,15 @@
 import { Box } from '@chakra-ui/react';
 import { ListElem } from './ListElem';
-import { ListValueType } from '../../../apis/googleSheetsApi/types/types';
+import { SheetValuesType } from '../types/types';
 
 export interface PropsType {
-  values: ListValueType[]
+  values: SheetValuesType[]
+  /** должен вызываться при нажатии на кнопку удаления элемента спика */
+  onDelete: (elem: SheetValuesType) => void
 }
 
-export function ListElems({values}: PropsType) {
+export function ListElems({values, onDelete}: PropsType) {
+
   return <Box
     display={'flex'}
     flexDirection={'column'}
@@ -17,14 +20,8 @@ export function ListElems({values}: PropsType) {
     alignItems={'start'}
   >
     {
-      values.map((el: ListValueType) => {
-        if (el.length > 0) {
-          console.log('!!-!!-!!  el {221120164802}\n', el); // del+
-          const name = el[0];
-          const isChecked = el[1] === '1';
-          console.log('!!-!!-!!  isChecked {221120164820}\n', isChecked); // del+
-          return <ListElem name={name} isChecked={isChecked}/>
-        }
+      values.map((el: SheetValuesType) => {
+        return <ListElem key={el.id} data={el} onDelete={onDelete}/>
       })
     }
   </Box>

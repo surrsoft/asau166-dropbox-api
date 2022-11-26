@@ -22,7 +22,7 @@ import { theme, themeObj } from '../../../theme';
 import { RoutesEnum } from '../../../types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAccessTokenGetFromUrl } from '../../../apis/dropbox/useAccessTokenGetFromUrl';
-import { MenuList, SidebarStyled } from '../components/MenuList';
+import { MenuList, SidebarStyled } from '../components/MenuList/MenuList';
 
 const appRev = process.env.REACT_APP_APP_REVISION || '';
 

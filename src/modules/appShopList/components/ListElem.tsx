@@ -1,13 +1,17 @@
-import { Box, Checkbox, IconButton } from '@chakra-ui/react';
-import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
+import { Box, Checkbox, DefaultIcon, Flex, IconButton } from '@chakra-ui/react';
+import { ArrowDownIcon, ArrowUpIcon, DeleteIcon } from '@chakra-ui/icons';
+import { SheetValuesType } from '../types/types';
 
 export interface ParamsType {
-  name: string
-  isChecked?: boolean
+  data: SheetValuesType
+  onDelete: (elem: SheetValuesType) => void
 }
 
-export function ListElem(params: ParamsType) {
-  const {name, isChecked = false} = params;
+export function ListElem({data, onDelete}: ParamsType) {
+  const {name, isChecked = false} = data;
+  const handleOnDelete = () => {
+    onDelete(data)
+  }
   return <Box
     display='flex'
     columnGap={'16px'}
@@ -19,6 +23,9 @@ export function ListElem(params: ParamsType) {
     <Box display={'flex'} alignItems={'center'}>
       {name}
     </Box>
-    <IconButton aria-label={'up arrow'} icon={<ArrowUpIcon/>}/>
+    <Flex>
+      <IconButton aria-label={'up arrow'} icon={<ArrowUpIcon/>}/>
+      <IconButton aria-label={'delete'} icon={<DeleteIcon/>} ml={'8px'} onClick={handleOnDelete}/>
+    </Flex>
   </Box>
 }

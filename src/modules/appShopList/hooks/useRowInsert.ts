@@ -5,6 +5,7 @@ import { DimensionEnum } from '../../../apis/googleSheetsApi/enums/DimensionEnum
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
 import { useBatchUpdate, VariablesType } from '../../../apis/googleSheetsApi/useBatchUpdate';
 import { Schema$BatchUpdateSpreadsheetRequest } from '../../../apis/googleSheetsApi/types/sheetsV4types/sheetsV4types';
+import { SheetValuesType } from '../types/types';
 
 export enum ResultCodeEnum {
   SUCCESS = 'SUCCESS',
@@ -13,14 +14,19 @@ export enum ResultCodeEnum {
 
 interface ReturnType {
   /** инициирует работу по вставке ряда */
-  perform: () => void,
+  perform: (value: SheetValuesType) => void,
   insertIsProgress: boolean
+}
+
+export interface PropsType {
+  onSuccess?: () => void
+  onError?: () => void
 }
 
 /**
  * Вставка пустого ряда на лист 'products' и заполнение его значением ...
  */
-export function useRowInsert(): ReturnType {
+export function useRowInsert({onSuccess, onError}: PropsType): ReturnType {
   const accessToken = GoogleApiTokenStore.tokenGet()
   const toast = useToast()
 
@@ -32,7 +38,6 @@ export function useRowInsert(): ReturnType {
       predicatesError: [
         {
           id: ResultCodeEnum.INVALID_ARGUMENT, predicate: (data: any) => {
-            console.log('!!-!!-!!  data {221123214344}\n', data); // del+
             return isErrorType(data) && data?.error?.status === 'INVALID_ARGUMENT'
           }, httpCode: 400
         },
@@ -56,15 +61,16 @@ export function useRowInsert(): ReturnType {
   if (insertIsDone) {
     if (insertIsSuccessExt) {
       toast({status: 'success', title: 'success', position: 'top', duration: 1000})
+      onSuccess?.()
     } else {
       toast({status: 'error', title: 'error', description: 'error to add entry', position: 'top'})
-      console.log('!!-!!-!!  insertMutation.resultExtended {221123214312}\n', insertMutation.resultExtended); // del+
       console.error('BR: ' + insertErrMessageExt)
+      onError?.()
     }
     insertReset()
   }
 
-  const onPerform = async () => {
+  const onPerform = async (value: SheetValuesType) => {
     const updateBody: Schema$BatchUpdateSpreadsheetRequest = {
       requests: [{
         insertDimension: {
@@ -81,7 +87,9 @@ export function useRowInsert(): ReturnType {
           rows: [
             {
               values: [
-                {userEnteredValue: {stringValue: 'hello'}},
+                {userEnteredValue: {stringValue: value.name}},
+                {userEnteredValue: {stringValue: value.isChecked ? '1' : ''}},
+                {userEnteredValue: {stringValue: value.id}},
               ]
             }
           ],

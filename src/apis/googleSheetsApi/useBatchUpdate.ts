@@ -46,7 +46,7 @@ export function useBatchUpdate({accessToken, spreadsheetId, predicates}: ParamsT
     })
   })
 
-  const resultNext = mutationHandle({
+  const resultExtended = mutationHandle({
     mutationResult: result,
     asyncMode: AsyncModeEnum.AXIOS,
     predicatesSuccess: predicates?.predicatesSuccess || [],
@@ -55,6 +55,6 @@ export function useBatchUpdate({accessToken, spreadsheetId, predicates}: ParamsT
 
   return {
     resultRaw: result,
-    resultExtended: resultNext
+    resultExtended
   };
 }

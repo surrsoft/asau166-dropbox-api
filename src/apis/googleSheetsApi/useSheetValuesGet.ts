@@ -7,7 +7,8 @@ export enum ResponseTypeEnum {
   SUCCESS = 'success',
   ERROR_INVALID_ARGUMENT = 'INVALID_ARGUMENT',
   ERROR_UNAUTHENTICATED = 'UNAUTHENTICATED',
-  ERROR_SOME = 'error_some'
+  ERROR_SOME = 'error_some',
+  PERMISSION_DENIED = 'PERMISSION_DENIED',
 }
 
 /**
@@ -45,6 +46,11 @@ export function useSheetValuesGet(
         id: ResponseTypeEnum.ERROR_UNAUTHENTICATED,
         predicate: (data: any) => isErrorType(data) && data.error.status === 'UNAUTHENTICATED',
         httpCode: 401
+      },
+      {
+        id: ResponseTypeEnum.PERMISSION_DENIED,
+        predicate: (data: any) => isErrorType(data) && data.error.status === 'PERMISSION_DENIED',
+        httpCode: 403
       },
       {id: ResponseTypeEnum.ERROR_SOME, predicate: isErrorType, httpCode: 400}
     ]

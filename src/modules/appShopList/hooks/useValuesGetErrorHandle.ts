@@ -1,5 +1,4 @@
 import { ResponseTypeEnum } from '../../../apis/googleSheetsApi/useSheetValuesGet';
-import { gotoAuth } from '../../../apis/googleApis/googleApis';
 
 export interface ParamsType {
   enabled?: boolean
@@ -7,8 +6,9 @@ export interface ParamsType {
 }
 
 export function useValuesGetErrorHandle({enabled = false, errorId}: ParamsType) {
-  // перебрасываем на роут авторизации если ошибка авторизации
-  if (enabled && errorId === ResponseTypeEnum.ERROR_UNAUTHENTICATED) {
-    gotoAuth()
-  }
+  console.log('!!-!!-!!  errorId {221126153926}\n', errorId); // del+
+  return !!(
+    enabled
+    && (errorId === ResponseTypeEnum.ERROR_UNAUTHENTICATED || errorId === ResponseTypeEnum.PERMISSION_DENIED)
+  );
 }
