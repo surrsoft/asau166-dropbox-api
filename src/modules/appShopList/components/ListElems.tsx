@@ -6,7 +6,7 @@ export interface PropsType {
   values: SheetValuesType[]
   /** должен вызываться при нажатии на кнопку удаления элемента спика */
   onDelete: (elem: SheetValuesType) => void
-  onToggle: (elem: SheetValuesType, isChecked: boolean) => void
+  onToggle: (elem: SheetValuesType, isChecked: boolean) => Promise<boolean>
   disabled?: boolean
 }
 

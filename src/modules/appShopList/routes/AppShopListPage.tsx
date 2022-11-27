@@ -1,9 +1,9 @@
-import { Box, Button, Heading, IconButton, Input, Spinner } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, IconButton, Input, Spinner } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons'
 import { GapRowStyled } from '../../../components/common/GapRowStyled';
 import { GoogleApiTokenStore } from '../../../apis/googleApis/GoogleApiTokenStore';
 import JSONPretty from 'react-json-pretty'
-import { ASAU170_SPREADSHEET_ID, CONF_NODATA_ROWS_COUNT, SHEET_PRODUCTS_INFO } from '../constants';
+import { ASAU170_SPREADSHEET_ID, SHEET_PRODUCTS_INFO } from '../constants';
 import { ListElems } from '../components/ListElems';
 import { useSheetValuesGet } from '../../../apis/googleSheetsApi/useSheetValuesGet';
 import { useValuesGetErrorHandle } from '../hooks/useValuesGetErrorHandle';
@@ -14,8 +14,9 @@ import { gotoAuth } from '../../../apis/googleApis/googleApis';
 import { textAdapt } from '../../../utils/utils';
 import { idGen, mapData } from '../utils/utils';
 import { SheetValuesType } from '../types/types';
-import { useBatchUpdateB } from '../../../apis/googleSheetsApi/useBatchUpdateB';
 import { useRowDelete } from '../hooks/useRowDelete';
+import { ShMenu } from '../components/ShMenu';
+import { useRowMove } from '../hooks/useRowMove';
 
 const ButtonsPaneStyled = styled.div`
   display: flex;
@@ -103,37 +104,42 @@ export function AppShopListPage() {
   }
 
   // ---
-  const {perform: handleDelete, isProgress: deleteIsProgress}
+  const {perform: reqDelete, isProgress: deleteIsProgress}
     = useRowDelete({valuesData: $valuesData, valuesDataSet: $valuesDataSet})
 
   // ---
-  const handleToggle = (elem: SheetValuesType, isChecked: boolean) => {
-    console.log('!!-!!-!! 0014- elem {221127001450}\n', elem); // del+
-    console.log('!!-!!-!! 0014- isChecked {221127001457}\n', isChecked); // del+
-    const index = $valuesData.findIndex(el => el.id === elem.id)
-    if (index !== -1) {
-      if (isChecked) {
-        const indexChecked = $valuesData.findIndex(el => el.isChecked)
-        const moved = $valuesData.splice(index, 1)[0]
-        moved.isChecked = true;
-        $valuesData.splice(indexChecked - 1, 0, moved)
-        $valuesDataSet([...$valuesData])
-      } else {
-        const moved = $valuesData.splice(index, 1)[0]
-        moved.isChecked = false;
-        $valuesData.splice(0, 0, moved)
-        $valuesDataSet([...$valuesData])
+  const {perform: reqMove, isProgress: moveIsProgress} = useRowMove({
+    valuesData: $valuesData,
+    valuesDataSet: $valuesDataSet
+  })
+
+  const handleCheckboxToggle = async (elem: SheetValuesType, isChecked: boolean) => {
+    return new Promise<boolean>((resolve) => {
+      const index = $valuesData.findIndex(el => el.id === elem.id)
+      if (index !== -1) {
+        if (isChecked) {
+          const itemChecked = $valuesData.find(el => el.isChecked)
+          reqMove({itemFrom: elem, itemTo: itemChecked, isChecked, resolve})
+        } else {
+          reqMove({itemFrom: elem, itemTo: $valuesData[0], isChecked, resolve})
+        }
       }
-    }
+    });
   }
 
   // ---
-  const isButtonAddDisabled = textAdapt($newEntryVal).length < 1 || insertIsProgress || deleteIsProgress;
-  const isInputDisabled = insertIsProgress || deleteIsProgress;
-  const isListDisabled = insertIsProgress || deleteIsProgress;
+  const isButtonAddDisabled = textAdapt($newEntryVal).length < 1 || insertIsProgress || deleteIsProgress || moveIsProgress;
+  const isInputDisabled = insertIsProgress || deleteIsProgress || moveIsProgress;
+  const isListDisabled = insertIsProgress || deleteIsProgress || moveIsProgress;
 
   return <Box>
-    <Heading size={'mb'}>Shopping List App</Heading>
+    <Flex alignItems={'center'}>
+      <Heading size={'mb'}>Shopping List App</Heading>
+      <Flex ml={'auto'}>
+        <ShMenu/>
+      </Flex>
+    </Flex>
+
     <GapRowStyled/>
     {valuesIsProgress && <Spinner/>}
     {isNeetToAuth && <Button onClick={handleToAuth}>to Google Sheets Auth</Button>}
@@ -157,8 +163,8 @@ export function AppShopListPage() {
 			<GapRowStyled height={8}/>
 			<ListElems
 				values={$valuesData}
-				onDelete={handleDelete}
-				onToggle={handleToggle}
+				onDelete={reqDelete}
+				onToggle={handleCheckboxToggle}
 				disabled={isListDisabled}
 			/>
 		</Box>}

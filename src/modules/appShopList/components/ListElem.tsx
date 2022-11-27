@@ -6,7 +6,7 @@ import { useState } from 'react';
 export interface ParamsType {
   data: SheetValuesType
   onDelete: (elem: SheetValuesType) => void
-  onToggle: (elem: SheetValuesType, isChecked: boolean) => void
+  onToggle: (elem: SheetValuesType, isChecked: boolean) => Promise<boolean>
   disabled?: boolean
 }
 
@@ -18,10 +18,12 @@ export function ListElem({data, onDelete, disabled = false, onToggle}: ParamsTyp
     onDelete(data)
   }
 
-  const handleOnToggle = (event: any) => {
+  const handleOnToggle = async (event: any) => {
     const checked = !!event.target.checked;
-    $isCheckedSet(checked);
-    onToggle(data, checked);
+    const isSuccess = await onToggle(data, checked);
+    if (isSuccess) {
+      $isCheckedSet(checked);
+    }
   }
 
   return <Box

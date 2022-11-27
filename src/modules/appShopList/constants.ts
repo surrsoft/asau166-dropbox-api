@@ -1,5 +1,6 @@
 import { UseToastOptions } from '@chakra-ui/react';
 
+export const GOOGLE_SPREADSHEETS_URL = 'https://docs.google.com/spreadsheets/d'
 /** книга 'app-asau170' */
 export const ASAU170_SPREADSHEET_ID = '1o-QzhaOdAaXxjnw93MCZM5VJGFB-_2_dbazbj3hlf-o';
 
@@ -10,6 +11,10 @@ export const CONF_NODATA_ROWS_COUNT = 1;
 export const SHEET_PRODUCTS_INFO = {
   name: 'products',
   sheetId: 0
+}
+
+export const SHEET_PRODUCTS_CHECK_COLUMN = {
+  columnIndex: 1
 }
 
 export const toastSuccess: UseToastOptions = {

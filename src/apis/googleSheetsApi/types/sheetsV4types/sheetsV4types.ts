@@ -4662,6 +4662,8 @@ export interface Schema$UpdateBordersRequest {
 
 /**
  * Updates all cells in a range with new data.
+ *
+ * @see https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#updatecellsrequest
  */
 export interface Schema$UpdateCellsRequest {
   /**
