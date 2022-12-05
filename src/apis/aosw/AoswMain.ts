@@ -1,7 +1,8 @@
-/*
+/**
 -- TElemModel - тип *модели
--- TRetModel - тип модели со стороны *использующего
+-- TRetModel - тип модели со стороны {@link uispu использующего}
  */
+const info = 1;
 
 export enum CreateResultCodeEnum {
   SOME = 'some',
