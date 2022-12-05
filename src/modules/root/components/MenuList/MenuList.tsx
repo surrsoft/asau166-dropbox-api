@@ -28,5 +28,6 @@ export function MenuList({onClose}: PropsType) {
     <NavWrap path={RoutesEnum.ZTYR_APP} onClick={onClose}>ztyr</NavWrap>
     <NavWrap path={RoutesEnum.GOOGLE_SHEETS_RESEARCH} onClick={onClose}>GS research</NavWrap>
     <NavWrap path={RoutesEnum.APP_SHOPPING_LIST} onClick={onClose}>app shopping list</NavWrap>
+    <NavWrap path={RoutesEnum.APP_EVENT_LOGGER} onClick={onClose}>app event logger</NavWrap>
   </SidebarStyled>
 }

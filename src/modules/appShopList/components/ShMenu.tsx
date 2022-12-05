@@ -1,7 +1,8 @@
 import { Icon, IconButton, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import { ASAU170_SPREADSHEET_ID, GOOGLE_SPREADSHEETS_URL } from '../constants';
+import { ASAU170_SPREADSHEET_ID } from '../constants';
+import { GOOGLE_SPREADSHEETS_URL } from '../../../apis/googleSheetsApi/constants';
 
 export function ShMenu() {
   const handleToTable = () => {

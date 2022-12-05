@@ -13,6 +13,7 @@ import { AuthorizeGoogleApisPage } from './modules/googleApiAuth/routes/Authoriz
 import { RedirectGooglePage } from './modules/googleApiAuth/routes/RedirectGooglePage';
 import { GoogleSheetsResearchPage } from './modules/googleSheetsResearch/routes/GoogleSheetsResearchPage';
 import { AppShopListPage } from './modules/appShopList/routes/AppShopListPage';
+import { AppEventLoggerPage } from './modules/appEventLogger/routes/AppEventLoggerPage';
 
 const routes = [
   {
@@ -63,6 +64,11 @@ const routes = [
       {
         path: RoutesEnum.APP_SHOPPING_LIST,
         element: <AppShopListPage/>,
+        errorElement: <ErrorPage/>,
+      },
+      {
+        path: RoutesEnum.APP_EVENT_LOGGER,
+        element: <AppEventLoggerPage/>,
         errorElement: <ErrorPage/>,
       }
     ]

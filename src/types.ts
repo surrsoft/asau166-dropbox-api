@@ -11,4 +11,5 @@ export enum RoutesEnum {
   ZTYR_APP = 'ztyr',
   GOOGLE_SHEETS_RESEARCH = 'google-sheets-research',
   APP_SHOPPING_LIST = 'app-shopping-list',
+  APP_EVENT_LOGGER = 'app-event-logger',
 }

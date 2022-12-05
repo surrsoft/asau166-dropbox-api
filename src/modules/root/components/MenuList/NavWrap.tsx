@@ -13,10 +13,12 @@ export interface PropsType {
 export function NavWrap({children, path, onClick}: PropsType & PropsWithChildren) {
   const navigate = useNavigate()
   const isMatch = useMatch(path)
+
   const handleClick = () => {
     onClick?.()
     navigate(path);
   }
+
   return <Box
     onClick={handleClick}
     padding='2px 8px'
